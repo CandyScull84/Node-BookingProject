@@ -1,1 +1,23 @@
- 
+# Ignorera node_modules (återskapas med npm install)
+node_modules/
+
+# Ignorera miljövariabler
+.env
+
+# OS och editor-filer
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+
+# VS Code settings (om du använder det)
+.vscode/
+
+# Byggfiler (om du har dem)
+dist/
+build/
+
