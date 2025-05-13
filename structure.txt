@@ -1,0 +1,33 @@
+ 
+camping-booking/
+│
+├── config/
+│   └── db.js                     # Databansanslutning
+│
+├── controllers/
+│   ├── authController.js        # Register/Login
+│   ├── placeController.js        # Hantera platser
+│   └── bookingController.js     # Hantera bokningar
+│
+├── middleware/
+│   ├── authMiddleware.js        # JWT verifiering
+│   └── roleMiddleware.js        # Kontrollera admin/user roller
+│
+├── models/
+│   ├── User.js
+│   ├── place.js
+│   └── Booking.js
+│
+├── routes/
+│   ├── authRoutes.js
+│   ├── placeRoutes.js
+│   └── bookingRoutes.js
+│
+├── utils/
+│   └── socket.js                # WebSocket notifieringar
+│
+├── .env                         # Miljövariabler (hemligheter)
+├── .gitignore                   # Ignorera node_modules m.m.
+├── package.json
+├── README.md
+└── server.js                    # Startpunkt
