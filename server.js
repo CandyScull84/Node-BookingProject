@@ -1,1 +1,35 @@
- 
+const dotenv = require('dotenv');
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const http = require('http');
+
+const authRoutes = require('./routes/authRoutes');
+const accomodationRoutes = require('./routes/accommodationRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const { verifyToken } = require('./middleware/authMiddleware');
+const { setupSocketIO } = require('./utils/socket');
+
+dotenv.config();
+const app = express();
+const server = http.createServer(app);
+setupSocketIO(server);
+
+app.use(cors());
+app.use(express.json());
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected...'))
+  .catch((error) => {
+    console.error('MongoDB connection error:', error.message);
+    process.exit(1);
+  });
+
+//Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/accommodation', verifyToken, accomodationRoutes);
+app.use('/api/booking', verifyToken, bookingRoutes);
+
+server.listen(process.env.PORT || 5000, () => {
+  console.log(`Server is running on port ${process.env.PORT || 5000}`);
+});
