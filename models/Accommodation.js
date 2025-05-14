@@ -24,8 +24,8 @@ const placeSchema = new mongoose.Schema({
     }
   },
   size: {
-    length: {type: Number},
-    width: {type: Number},
+    type: Number,
+    required: true,
   },
   location: {
     type: String,
