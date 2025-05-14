@@ -18,8 +18,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user',
+    enum: ['User', 'Admin'],
+    default: 'User',
   },
   createdAt: {
     type: Date,
@@ -35,8 +35,8 @@ userSchema.pre('save', async function (next) {
 });
 
 // Method to compare password
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+userSchema.methods.comparePassword = async function (userPassword) {
+  return await bcrypt.compare(userPassword, this.password);
 };  
 
 // Method to generate JWT token
@@ -58,7 +58,6 @@ userSchema.methods.isUser = function () {
 };
 
 // Method to check if user is authenticated 
-
 userSchema.methods.isAuthenticated = function () {
   return !!this._id;
 }

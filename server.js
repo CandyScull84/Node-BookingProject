@@ -1,4 +1,4 @@
-const dotenv = require('dotenv');
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -10,7 +10,6 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const { verifyToken } = require('./middleware/authMiddleware');
 const { setupSocketIO } = require('./utils/socket');
 
-dotenv.config();
 const app = express();
 const server = http.createServer(app);
 setupSocketIO(server);
