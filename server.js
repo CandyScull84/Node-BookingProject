@@ -5,14 +5,14 @@ const cors = require('cors');
 const http = require('http');
 
 const authRoutes = require('./routes/authRoutes');
-const accomodationRoutes = require('./routes/accommodationRoutes');
+const accommodationRoutes = require('./routes/accommodationRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const { verifyToken } = require('./middleware/authMiddleware');
-// const { setupSocketIO } = require('./utils/socket');
+const setupSocketIO = require('./utils/socket');
 
 const app = express();
 const server = http.createServer(app);
-// setupSocketIO(server);
+setupSocketIO(server);
 
 app.use(cors());
 app.use(express.json());
@@ -26,7 +26,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 //Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/accommodation', verifyToken, accomodationRoutes);
+app.use('/api/accommodation', verifyToken, accommodationRoutes);
 app.use('/api/booking', verifyToken, bookingRoutes);
 
 server.listen(process.env.PORT || 5000, () => {
