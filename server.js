@@ -27,7 +27,7 @@ mongoose.connect(process.env.MONGO_URI)
   // console.log('accommodationRoutes:', typeof accommodationRoutes);
 //Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/accommodation', verifyToken, accommodationRoutes);
+// app.use('/api/accommodation', verifyToken, accommodationRoutes);
 // app.use('/api/booking', verifyToken, bookingRoutes);
 
 server.listen(process.env.PORT || 5000, () => {
