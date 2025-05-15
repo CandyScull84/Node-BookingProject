@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const {
   createAccommodation,
   getAllAccommodations,
@@ -10,10 +11,9 @@ const {
 const verifyToken = require('../middleware/authMiddleware');
 const requireAdmin = require('../middleware/roleMiddleware');
 
-router.use(verifyToken); // Alla kräver inloggning
+router.use(verifyToken); // Alla routes kräver inloggning
 
-// Alla får läsa
-router.get('/', getAllAccommodations);
+router.get('/', getAllAccommodations);// Alla får läsa
 
 // Endast admin får skapa, ändra, ta bort
 router.post('/', requireAdmin, createAccommodation);
