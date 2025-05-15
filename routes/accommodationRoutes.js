@@ -13,7 +13,7 @@ const requireAdmin = require('../middleware/roleMiddleware');
 
 router.use(verifyToken); // Alla routes kräver inloggning
 
-router.get('/', getAllAccommodations);// Alla får läsa
+router.get('/', verifyToken, getAllAccommodations);// Alla får läsa
 
 // Endast admin får skapa, ändra, ta bort
 router.post('/', requireAdmin, createAccommodation);

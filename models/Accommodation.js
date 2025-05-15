@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { validate } = require('./user');
 
 function requireCapacityForCabin(value) {
   // Om det inte är Cabin, bryr vi oss inte
@@ -25,15 +24,16 @@ const accommodationSchema = new mongoose.Schema({
   },
   capacity: {
     type: Number,
-    required: true,
     validate: {
       validator: requireCapacityForCabin,
       message: 'Number of people is required when booking a cabin',
     }
   },
   size: {
-    length: {type: Number},
-    width: {type: Number},
+    type:{
+      length: {type: Number},
+      width: {type: Number},
+    }
   },
   facilities: {
     enum: ['Electricity', 'Water', 'Toilet', 'Shower', 'WiFi', 'Firepit'],
