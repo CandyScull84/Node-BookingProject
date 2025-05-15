@@ -28,7 +28,7 @@ mongoose.connect(process.env.MONGO_URI)
 //Routes
 app.use('/api/auth', authRoutes);
 // app.use('/api/accommodation', verifyToken, accommodationRoutes);
-// app.use('/api/booking', verifyToken, bookingRoutes);
+app.use('/api/booking', bookingRoutes);
 
 server.listen(process.env.PORT || 5000, () => {
   console.log(`Server is running on port ${process.env.PORT || 5000}`);
