@@ -1,4 +1,5 @@
 const Booking = require('../models/booking');
+const { getIo } = require('../utils/socket');
 
 const getBookings = async (req, res) => {
   try {
@@ -12,7 +13,7 @@ const getBookings = async (req, res) => {
 const createBooking = async (req, res) => {
   try {
     const { accommodationId, startDate, endDate } = req.body;
-    
+
     const overlapping = await Booking.findOne({
       accommodationId,
       $or: [
@@ -35,6 +36,14 @@ const createBooking = async (req, res) => {
     });
 
     await booking.save();
+    const io = getIo();
+    io.emit('bookingCreated', {
+      userId: req.user.id,
+      accommodationId,
+      startDate,
+      endDate
+    });
+
     res.status(201).json(booking);
   } catch (err) {
     res.status(400).json({ error: 'Kunde inte skapa bokning', details: err.message });
