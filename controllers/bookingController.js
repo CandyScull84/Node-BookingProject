@@ -12,6 +12,20 @@ const getBookings = async (req, res) => {
 const createBooking = async (req, res) => {
   try {
     const { accommodationId, startDate, endDate } = req.body;
+    
+    const overlapping = await Booking.findOne({
+      accommodationId,
+      $or: [
+        {
+          startDate: { $lte: new Date(endDate) },
+          endDate: { $gte: new Date(startDate) }
+        }
+      ]
+    });
+
+    if (overlapping) {
+      return res.status(400).json({ error: 'Boendet är redan bokat för vald period' });
+    }
 
     const booking = new Booking({
       accommodationId,
