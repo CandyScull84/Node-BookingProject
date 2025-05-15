@@ -8,11 +8,11 @@ const authRoutes = require('./routes/authRoutes');
 const accomodationRoutes = require('./routes/accommodationRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const { verifyToken } = require('./middleware/authMiddleware');
-const { setupSocketIO } = require('./utils/socket');
+// const { setupSocketIO } = require('./utils/socket');
 
 const app = express();
 const server = http.createServer(app);
-setupSocketIO(server);
+// setupSocketIO(server);
 
 app.use(cors());
 app.use(express.json());
