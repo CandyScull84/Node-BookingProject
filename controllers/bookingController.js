@@ -1,5 +1,5 @@
 const Booking = require('../models/booking');
-const { getIo } = require('../utils/socket');
+const getIo  = require('../utils/socket');
 
 const getBookings = async (req, res) => {
   try {

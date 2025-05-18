@@ -9,6 +9,8 @@ function setupSocketIO(server) {
     }
   });
 
+  ioInstance = io; // Store the instance for later use
+
   io.on('connection', (socket) => {
     console.log('User connected to server');
 
@@ -19,7 +21,7 @@ function setupSocketIO(server) {
 }
 
 const getIo = () => ioInstance;
-ioInstance = ioInstance || io; // Ensure only one instance of io is created
+
 
 module.exports = setupSocketIO;
 module.exports.getIo = getIo;
