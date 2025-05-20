@@ -3,6 +3,8 @@ import Login from './pages/Login';
 // import logo from './logo.svg';
 import './App.css';
 import Register from './pages/Register';
+import Accommodations from './pages/Accommodations';
+
 
 function App() {
   return (
@@ -10,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/accommodations" element={<Accommodations />} />
       </Routes>
       </BrowserRouter>
   
