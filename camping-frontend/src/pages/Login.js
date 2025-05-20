@@ -15,7 +15,7 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const res = await API.post('/auth/login', form);
-      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('authToken', res.data.token);
       navigate('/accommodations');
     } catch (err) {
       alert('Inloggning misslyckades');

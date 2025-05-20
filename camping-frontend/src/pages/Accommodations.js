@@ -18,6 +18,7 @@ export default function Accommodations() {
     const fetchData = async () => {
       try {
         const res = await API.get('/accommodation');
+        console.log('API-svar:', res.data); 
         setAccommodations(res.data);
       } catch (err) {
         console.error('Kunde inte hämta boenden:', err);
