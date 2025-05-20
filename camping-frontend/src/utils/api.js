@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'https://your-api-url.com/api', // Replace with your API base URL
+const API = axios.create({
+  baseURL: 'http://localhost:5000/api', // Replace with your API base URL
   timeout: 5000, // Optional: Set a timeout for requests
   headers: {
     'Content-Type': 'application/json',
@@ -9,7 +9,7 @@ const api = axios.create({
 });
 
 // Example of adding an interceptor for requests
-api.interceptors.request.use(
+API.interceptors.request.use(
   (config) => {
     // You can add authorization tokens or other custom headers here
     const token = localStorage.getItem('authToken');
@@ -24,7 +24,7 @@ api.interceptors.request.use(
 );
 
 // Example of adding an interceptor for responses
-api.interceptors.response.use(
+API.interceptors.response.use(
   (response) => response,
   (error) => {
     // Handle errors globally
@@ -36,6 +36,6 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export default API;
 
 

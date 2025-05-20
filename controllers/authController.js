@@ -1,12 +1,12 @@
-const User = require('../models/user'); // Importera användarmodellen
+const User = require('../models/User'); // Importera användarmodellen
 const jwt = require('jsonwebtoken');
 
 // Registrera en ny användare
 const register = async (req, res) => {
   try {
-    const { username, password, email, role } = req.body;
+    const { username, password, email } = req.body;
 
-    const user = new User({ username, password, email, role });
+    const user = new User({ username, password, email });
     await user.save();
 
     res.status(201).json({ message: 'Användare registrerad' });
@@ -18,9 +18,9 @@ const register = async (req, res) => {
 // Logga in och få token
 const login = async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password } = req.body;
 
-    const user = await User.findOne({ username, role });
+    const user = await User.findOne({ username });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ error: 'Fel användarnamn eller lösenord' });
     }

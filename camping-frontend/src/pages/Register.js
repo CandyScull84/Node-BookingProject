@@ -22,6 +22,7 @@ export default function Register() {
       alert('Registrering lyckades! Du kan nu logga in.');
       navigate('/');
     } catch (err) {
+      console.error(err.response?.data || err.message); 
       alert('Registrering misslyckades');
     }
   };
