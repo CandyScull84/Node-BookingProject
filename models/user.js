@@ -68,5 +68,6 @@ userSchema.methods.isGuest = function () {
   return !this._id;
 }
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);
+
 
