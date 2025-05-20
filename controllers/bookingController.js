@@ -12,7 +12,16 @@ const getBookings = async (req, res) => {
 
 const createBooking = async (req, res) => {
   try {
-    const { accommodationId, startDate, endDate } = req.body;
+    const { accommodationId, startDate, endDate, guests } = req.body;
+
+    const accommodation = await Accommodation.findById(accommodationId);
+    if (!accommodation) {
+      return res.status(404).json({ error: 'Boendet kunde inte hittas' });
+    }
+    
+    if (accommodation.type === 'Cabin' && guests > accommodation.capacity) {
+      return res.status(400).json({ error: `Stugan rymmer max ${accommodation.capacity} personer` });
+    }
 
     const overlapping = await Booking.findOne({
       accommodationId,
@@ -32,10 +41,12 @@ const createBooking = async (req, res) => {
       accommodationId,
       userId: req.user.id,
       startDate,
-      endDate
+      endDate,
+      guests
     });
 
     await booking.save();
+    
     const io = getIo();
     io.emit('bookingCreated', {
       userId: req.user.id,

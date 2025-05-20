@@ -11,6 +11,7 @@ const bookingSchema = new mongoose.Schema({
     ref: 'User', 
     required: true, 
   },
+  guests: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
 }, {
