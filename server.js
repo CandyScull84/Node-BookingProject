@@ -7,8 +7,7 @@ const http = require('http');
 const authRoutes = require('./routes/authRoutes');
 const accommodationRoutes = require('./routes/accommodationRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
-const verifyToken = require('./middleware/authMiddleware');
-const setupSocketIO = require('./utils/socket');
+const {setupSocketIO} = require('./utils/socket');
 
 const app = express();
 const server = http.createServer(app);
@@ -30,7 +29,7 @@ mongoose.connect(process.env.MONGO_URI)
   // console.log('accommodationRoutes:', typeof accommodationRoutes);
 //Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/accommodation', verifyToken, accommodationRoutes);
+app.use('/api/accommodation', accommodationRoutes);
 app.use('/api/booking', bookingRoutes);
 
 server.listen(process.env.PORT || 5000, () => {

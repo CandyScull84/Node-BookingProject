@@ -13,8 +13,15 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField
+  TextField,
+  Snackbar
 } from '@mui/material';
+
+const [bookingMsg, setBookingMsg] = useState('');
+const [bookingErrorMsg, setBookingErrorMsg] = useState('');
+const [showMsg, setShowMsg] = useState(false);
+const [showError, setShowError] = useState(false);
+
 
 export default function Accommodations() {
   const [accommodations, setAccommodations] = useState([]);
@@ -40,24 +47,35 @@ export default function Accommodations() {
   }, []);
 
     const handleBooking = async () => {
-    if (!form.startDate || !form.endDate) {
-      alert('Vänligen välj datum');
+    if (!form.startDate || !form.endDate || !selectedAccommodation) {
+      alert('Vänligen fyll i alla fält.');
       return;
     }
 
+    console.log('📦 Skickar bokning:', {
+      accommodationId: selectedAccommodation._id,
+      startDate: form.startDate,
+      endDate: form.endDate,
+      guests: form.guests
+    });
+    
     try {
       await API.post('/booking', {
-        accommodationId: selectedAcc._id,
+        accommodationId: selectedAccommodation._id,
         startDate: form.startDate,
         endDate: form.endDate,
         guests: form.guests
       });
 
-      alert('Bokning genomförd!');
-      setOpen(false);
-      setForm({ startDate: '', endDate: '', guests: 1 });
+      setShowMsg(true);
+      setBookingMsg('Bokning lyckades!');
+     
+      setAccommodationOpen(false);
+      setAccommodationForm({ startDate: '', endDate: '', guests: 1 });
     } catch (err) {
-      alert('Kunde inte boka. Kontrollera att du är inloggad.');
+      console.error('❌ Fel vid bokning:', err.response?.data || err.message);
+      setBookingErrorMsg(err.response?.data?.details || 'Bokning misslyckades');
+      setShowError(true);
     }
   };
 
@@ -66,7 +84,7 @@ export default function Accommodations() {
       <Typography variant="h4" gutterBottom>Alla Boenden</Typography>
       <Grid container spacing={3}>
         {accommodations.map(acc => (
-          <Grid item xs={12} sm={6} md={4} key={acc._id}>
+          <Grid key={acc._id} lg={4} md={6} xs={12}>
             <Card>
               <CardContent>
                 <Typography variant="h6">{acc.name}</Typography>
@@ -91,8 +109,8 @@ export default function Accommodations() {
               <CardActions>
                 <Button size="small" variant="outlined" 
                   onClick={() => {
-                    setSelectedAcc(acc);
-                    setOpen(true);
+                    setSelectedAccommodation(acc);
+                    setAccommodationOpen(true);
                   }}>
                   Boka
                 </Button>
@@ -103,15 +121,15 @@ export default function Accommodations() {
       </Grid>
 
         {/* Dialogruta */}
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Boka: {selectedAcc?.name}</DialogTitle>
+      <Dialog open={open} onClose={() => setAccommodationOpen(false)}>
+        <DialogTitle>Boka: {selectedAccommodation?.name}</DialogTitle>
         <DialogContent>
           <TextField
             label="Startdatum"
             type="date"
             fullWidth
             value={form.startDate}
-            onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+            onChange={(e) => setAccommodationForm({ ...form, startDate: e.target.value })}
             InputLabelProps={{ shrink: true }}
             sx={{ mb: 2 }}
           />
@@ -120,7 +138,8 @@ export default function Accommodations() {
             type="date"
             fullWidth
             value={form.endDate}
-            onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+            onChange={(e) => setAccommodationForm({ ...form, endDate: e.target.value })}
+            InputLabelProps={{ shrink: true }}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -128,15 +147,29 @@ export default function Accommodations() {
             type="number"
             fullWidth
             value={form.guests}
-            onChange={(e) => setForm({ ...form, guests: parseInt(e.target.value) })}
-            inputProps={{ min: 1, max: selectedAcc?.capacity || 10 }}
+            onChange={(e) => setAccommodationForm({ ...form, guests: parseInt(e.target.value) || 1 })}
+            inputProps={{ min: 1, max: selectedAccommodation?.capacity ?? 10 }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Avbryt</Button>
+          <Button onClick={() => setAccommodationOpen(false)}>Avbryt</Button>
           <Button onClick={handleBooking} variant="contained">Boka</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={showMsg}
+        autoHideDuration={3000}
+        onClose={() => setShowMsg(false)}
+        message={bookingMsg}
+      >
+      </Snackbar>  
+      <Snackbar
+        open={showError}
+        autoHideDuration={3000}
+        onClose={() => setShowError(false)}
+        message={bookingErrorMsg}
+      >
+      </Snackbar>
 
     </Container>
   );

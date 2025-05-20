@@ -8,10 +8,10 @@ const verifyToken = require('../middleware/authMiddleware');
 // Alla bokningar kräver att man är inloggad
 router.use(verifyToken);
 
-router.post('/', createBooking); // Skapa bokning
-router.get('/', getBookings); // Hämta bokningar
-router.put('/:id', updateBooking); // Uppdatera bokning
-router.delete('/:id', deleteBooking); // Ta bort bokning
+router.post('/', verifyToken, createBooking); // Skapa bokning
+router.get('/', verifyToken, getBookings); // Hämta bokningar
+router.put('/:id', verifyToken, updateBooking); // Uppdatera bokning
+router.delete('/:id', verifyToken, deleteBooking); // Ta bort bokning
 
 module.exports = router;
 

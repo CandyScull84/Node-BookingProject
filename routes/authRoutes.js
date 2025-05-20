@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { register, login } = require('../controllers/authController');
+const verifyToken = require('../middleware/authMiddleware');
 
 const User = require('../models/User');
+router.use(verifyToken); // ✅ bra att ha för att skydda hela routen
+
 
 router.get('/all', async (req, res) => {
   try {

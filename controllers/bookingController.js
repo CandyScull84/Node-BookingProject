@@ -1,7 +1,10 @@
 const Booking = require('../models/booking');
-const getIo  = require('../utils/socket');
+const {getIo}  = require('../utils/socket');
+const Accommodation = require('../models/Accommodation');
 
 const getBookings = async (req, res) => {
+  console.log('Användare som försöker boka:', req.user);
+
   try {
     const bookings = await Booking.find({ userId: req.user.id }).populate('accommodationId');
     res.json(bookings);
@@ -11,6 +14,10 @@ const getBookings = async (req, res) => {
 };
 
 const createBooking = async (req, res) => {
+  console.log('📦 POST /api/booking körs');
+  console.log('🧾 Innehåll i req.body:', req.body);
+  console.log('🔐 Inloggad användare:', req.user);
+
   try {
     const { accommodationId, startDate, endDate, guests } = req.body;
 
@@ -46,7 +53,7 @@ const createBooking = async (req, res) => {
     });
 
     await booking.save();
-    
+
     const io = getIo();
     io.emit('bookingCreated', {
       userId: req.user.id,
@@ -57,6 +64,7 @@ const createBooking = async (req, res) => {
 
     res.status(201).json(booking);
   } catch (err) {
+    console.error('❌ Fel vid skapande av bokning:', err);
     res.status(400).json({ error: 'Kunde inte skapa bokning', details: err.message });
   }
 };
