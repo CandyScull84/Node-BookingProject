@@ -1,12 +1,12 @@
 const Booking = require('../models/booking');
 const {getIo}  = require('../utils/socket');
-const Accommodation = require('../models/Accommodation');
+const Rooms = require('../models/Rooms');
 
 const getBookings = async (req, res) => {
   console.log('Användare som försöker boka:', req.user);
 
   try {
-    const bookings = await Booking.find({ userId: req.user.id }).populate('accommodationId');
+    const bookings = await Booking.find({ userId: req.user.id }).populate('roomId');
     res.json(bookings);
   } catch (err) {
     res.status(500).json({ error: 'Kunde inte hämta bokningar' });
@@ -19,19 +19,19 @@ const createBooking = async (req, res) => {
   console.log('🔐 Inloggad användare:', req.user);
 
   try {
-    const { accommodationId, startDate, endDate, guests } = req.body;
+    const { roomId, startDate, endDate, guests } = req.body;
 
-    const accommodation = await Accommodation.findById(accommodationId);
-    if (!accommodation) {
+    const room = await room.findById(roomId);
+    if (!room) {
       return res.status(404).json({ error: 'Boendet kunde inte hittas' });
     }
     
-    if (accommodation.type === 'Cabin' && guests > accommodation.capacity) {
-      return res.status(400).json({ error: `Stugan rymmer max ${accommodation.capacity} personer` });
+    if (room.type === 'single' && guests > room.capacity) {
+      return res.status(400).json({ error: `Rummet rymmer max ${room.capacity} person` });
     }
 
     const overlapping = await Booking.findOne({
-      accommodationId,
+      roomId,
       $or: [
         {
           startDate: { $lte: new Date(endDate) },
@@ -41,11 +41,11 @@ const createBooking = async (req, res) => {
     });
 
     if (overlapping) {
-      return res.status(400).json({ error: 'Boendet är redan bokat för vald period' });
+      return res.status(400).json({ error: 'Rummet är redan bokat för den valda tiden' });
     }
 
     const booking = new Booking({
-      accommodationId,
+      roomId,
       userId: req.user.id,
       startDate,
       endDate,
@@ -57,7 +57,7 @@ const createBooking = async (req, res) => {
     const io = getIo();
     io.emit('bookingCreated', {
       userId: req.user.id,
-      accommodationId,
+      roomId,
       startDate,
       endDate
     });

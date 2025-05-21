@@ -74,8 +74,8 @@ export default function MyBookings() {
           <Grid item xs={12} sm={6} md={4} key={b._id}>
             <Card>
               <CardContent>
-                <Typography variant="h6">{b.accommodationId?.name || 'Plats saknas'}</Typography>
-                <Typography>Typ: {b.accommodationId?.type}</Typography>
+                <Typography variant="h6">{b.roomId?.name || 'Plats saknas'}</Typography>
+                <Typography>Typ: {b.roomId?.type}</Typography>
                 <Typography>Från: {dayjs(b.startDate).format('YYYY-MM-DD')}</Typography>
                 <Typography>Till: {dayjs(b.endDate).format('YYYY-MM-DD')}</Typography>
               </CardContent>

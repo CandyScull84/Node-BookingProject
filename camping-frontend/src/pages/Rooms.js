@@ -23,11 +23,11 @@ const [showMsg, setShowMsg] = useState(false);
 const [showError, setShowError] = useState(false);
 
 
-export default function Accommodations() {
-  const [accommodations, setAccommodations] = useState([]);
-  const [selectedAccommodation, setSelectedAccommodation] = useState(null);
-  const [open, setAccommodationOpen] = useState(false);
-  const [form, setAccommodationForm] = useState({
+export default function Rooms() {
+  const [room, setRoom] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [open, setRoomOpen] = useState(false);
+  const [form, setRoomForm] = useState({
     startDate: '',
     endDate: '',
     guests: 1
@@ -36,24 +36,24 @@ export default function Accommodations() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await API.get('/accommodation');
+        const res = await API.get('/rooms');
         console.log('API-svar:', res.data); 
-        setAccommodations(res.data);
+        setRoom(res.data);
       } catch (err) {
-        console.error('Kunde inte hämta boenden:', err);
+        console.error('Kunde inte hämta rum:', err);
       }
     };
     fetchData();
   }, []);
 
     const handleBooking = async () => {
-    if (!form.startDate || !form.endDate || !selectedAccommodation) {
+    if (!form.startDate || !form.endDate || !selectedRoom) {
       alert('Vänligen fyll i alla fält.');
       return;
     }
 
     console.log('📦 Skickar bokning:', {
-      accommodationId: selectedAccommodation._id,
+      roomId: selectedRoom._id,
       startDate: form.startDate,
       endDate: form.endDate,
       guests: form.guests
@@ -61,7 +61,7 @@ export default function Accommodations() {
     
     try {
       await API.post('/booking', {
-        accommodationId: selectedAccommodation._id,
+        roomId: selectedRoom._id,
         startDate: form.startDate,
         endDate: form.endDate,
         guests: form.guests
@@ -70,8 +70,8 @@ export default function Accommodations() {
       setShowMsg(true);
       setBookingMsg('Bokning lyckades!');
      
-      setAccommodationOpen(false);
-      setAccommodationForm({ startDate: '', endDate: '', guests: 1 });
+      setRoomOpen(false);
+      setRoomForm({ startDate: '', endDate: '', guests: 1 });
     } catch (err) {
       console.error('❌ Fel vid bokning:', err.response?.data || err.message);
       setBookingErrorMsg(err.response?.data?.details || 'Bokning misslyckades');
@@ -109,8 +109,8 @@ export default function Accommodations() {
               <CardActions>
                 <Button size="small" variant="outlined" 
                   onClick={() => {
-                    setSelectedAccommodation(acc);
-                    setAccommodationOpen(true);
+                    setSelectedRoom(acc);
+                    setRoomOpen(true);
                   }}>
                   Boka
                 </Button>
@@ -121,15 +121,15 @@ export default function Accommodations() {
       </Grid>
 
         {/* Dialogruta */}
-      <Dialog open={open} onClose={() => setAccommodationOpen(false)}>
-        <DialogTitle>Boka: {selectedAccommodation?.name}</DialogTitle>
+      <Dialog open={open} onClose={() => setRoomOpen(false)}>
+        <DialogTitle>Boka: {selectedRoom?.name}</DialogTitle>
         <DialogContent>
           <TextField
             label="Startdatum"
             type="date"
             fullWidth
             value={form.startDate}
-            onChange={(e) => setAccommodationForm({ ...form, startDate: e.target.value })}
+            onChange={(e) => setRoomForm({ ...form, startDate: e.target.value })}
             InputLabelProps={{ shrink: true }}
             sx={{ mb: 2 }}
           />
@@ -138,7 +138,7 @@ export default function Accommodations() {
             type="date"
             fullWidth
             value={form.endDate}
-            onChange={(e) => setAccommodationForm({ ...form, endDate: e.target.value })}
+            onChange={(e) => setRoomForm({ ...form, endDate: e.target.value })}
             InputLabelProps={{ shrink: true }}
             sx={{ mb: 2 }}
           />
@@ -147,12 +147,12 @@ export default function Accommodations() {
             type="number"
             fullWidth
             value={form.guests}
-            onChange={(e) => setAccommodationForm({ ...form, guests: parseInt(e.target.value) || 1 })}
+            onChange={(e) => setRoomForm({ ...form, guests: parseInt(e.target.value) || 1 })}
             inputProps={{ min: 1, max: selectedAccommodation?.capacity ?? 10 }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setAccommodationOpen(false)}>Avbryt</Button>
+          <Button onClick={() => setRoomOpen(false)}>Avbryt</Button>
           <Button onClick={handleBooking} variant="contained">Boka</Button>
         </DialogActions>
       </Dialog>

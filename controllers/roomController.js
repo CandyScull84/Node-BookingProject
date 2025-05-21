@@ -1,48 +1,48 @@
-const Accommodation = require('../models/Accommodation');
+const Rooms = require('../models/Rooms');
 
-const createAccommodation = async (req, res) => {
+const createRooms = async (req, res) => {
   try {
-    const accommodation = new Accommodation(req.body);
-    await accommodation.save();
-    res.status(201).json(accommodation);
+    const room = new Rooms(req.body);
+    await room.save();
+    res.status(201).json(room);
   } catch (err) {
-    res.status(400).json({ error: 'Couldnt create accommodation', details: err.message });
+    res.status(400).json({ error: 'Couldnt create room', details: err.message });
   }
 };
 
-const getAllAccommodations = async (req, res) => {
+const getAllRooms = async (req, res) => {
   try {
-    const accommodations = await Accommodation.find();
-    res.json(accommodations);
+    const room = await Rooms.find();
+    res.json(room);
   } catch (err) {
     res.status(500).json({ error: 'Fel vid hämtning av boenden' });
   }
 };
 
-const updateAccommodation = async (req, res) => {
+const updateRooms = async (req, res) => {
   try {
-    const updated = await Accommodation.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!updated) return res.status(404).json({ error: 'Accommodation not found' });
+    const updated = await Rooms.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!updated) return res.status(404).json({ error: 'Room not found' });
     res.json(updated);
   } catch (err) {
-    res.status(400).json({ error: 'Could not update accommodation', details: err.message });
+    res.status(400).json({ error: 'Could not update room', details: err.message });
   }
 };
 
-const deleteAccommodation = async (req, res) => {
+const deleteRooms = async (req, res) => {
   try {
-    const deleted = await Accommodation.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ error: 'Accommodation not found' });
-    res.json({ message: 'Accommodation deleted' });
+    const deleted = await Rooms.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'Room not found' });
+    res.json({ message: 'Room deleted' });
   } catch (err) {
-    res.status(500).json({ error: 'Could not delete the accommodation' });
+    res.status(500).json({ error: 'Could not delete the room' });
   }
 };
 
 module.exports = {
-  createAccommodation,
-  getAllAccommodations,
-  updateAccommodation,
-  deleteAccommodation
+  createRooms,
+  getAllRooms,
+  updateRooms,
+  deleteRooms
 };
 
