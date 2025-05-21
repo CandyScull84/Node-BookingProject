@@ -20,7 +20,7 @@ const createBooking = async (req, res) => {
   console.log('🔐 Inloggad användare:', req.user);
 
   try {
-    const { roomId, startDate, endDate, guests, startTime, endTime } = req.body;
+    const { roomId, startDate, endDate, guests, date, startTime, endTime } = req.body;
 
     const room = await Rooms.findById(roomId);
     if (!room) {
@@ -32,18 +32,27 @@ const createBooking = async (req, res) => {
     }
 
     if (room.type === 'hotel') {
-      // Validera hotellbokning
-      if (!startDate || !endDate) return res.status(400).json({ error: 'Datum saknas' });
+      if (!startDate || !endDate) {
+        return res.status(400).json({ error: 'Start- och slutdatum krävs för hotellbokning' });
+      }
+
+      const overlapping = await Booking.findOne({
+        roomId,
+        startDate: { $lte: endDate },
+        endDate: { $gte: startDate }
+      });
+      if (overlapping) {
+        return res.status(400).json({ error: 'Rummet är redan bokat för den valda perioden' });
+      }
     }
 
     if (room.type === 'conference') {
-      if (!startTime || !endTime || !date) {
+      if (!date || !startTime || !endTime) {
         return res.status(400).json({ error: 'Datum + Start- och sluttid krävs för konferensrum' });
-      };
-    }
-      
+      }
+
       if (startTime >= endTime) {
-        return res.status(400).json({ error: 'Ogiltig tid' });
+        return res.status(400).json({ error: 'Ogiltig tidsintervall' });
       }
 
       const overlapping = await Booking.findOne({
@@ -52,30 +61,49 @@ const createBooking = async (req, res) => {
         $or: [
          { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
         ]
-    });
-    if (overlapping) return res.status(400).json({ error: 'Rummet är redan bokat för den valda tiden' });
-    
+      });
+      if (overlapping) return res.status(400).json({ error: 'Rummet är redan bokat för den valda tiden' });
+    }
 
-    const booking = new Booking({
+    const bookingData = {
       roomId,
       userId: req.user.id,
-      date,
-      startTime,
-      endTime,
-      startDate,
-      endDate,
       guests
-    });
+    };
 
+    if (room.type === 'hotel') {
+      bookingData.startDate = startDate;
+      bookingData.endDate = endDate;
+    }
+
+    if (room.type === 'conference') {
+      bookingData.date = date;
+      bookingData.startTime = startTime;
+      bookingData.endTime = endTime;
+    }
+
+    const booking = new Booking(bookingData);
     await booking.save();
 
-    const io = getIo();
-    io.emit('bookingCreated', {
+    let notificationData = {
       userId: req.user.id,
       roomId,
-      startDate,
-      endDate
-    });
+      type: room.type
+    };
+
+    if (room.type === 'hotel') {
+      notificationData.startDate = startDate;
+      notificationData.endDate = endDate;
+    }
+
+    if (room.type === 'conference') {
+      notificationData.date = date;
+      notificationData.startTime = startTime;
+      notificationData.endTime = endTime;
+    }
+
+    const io = getIo();
+    io.emit('bookingCreated', notificationData);
 
     res.status(201).json(booking);
   } catch (err) {
