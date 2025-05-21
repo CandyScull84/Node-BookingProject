@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-  accommodationId: { 
+  roomId: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Accommodation', 
+    ref: 'Room', 
     required: true,
   },
   userId: { 
@@ -14,6 +14,11 @@ const bookingSchema = new mongoose.Schema({
   guests: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
+
+   // För konferensrum:
+  date: { type: Date }, // t.ex. "2023-10-01"
+  startTime: { type: String }, // t.ex. "09:00"
+  endTime: { type: String }    // t.ex. "12:00"
 }, {
   timestamps: true
 });

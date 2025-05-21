@@ -2,11 +2,12 @@ const Booking = require('../models/booking');
 const {getIo}  = require('../utils/socket');
 const Rooms = require('../models/Rooms');
 
-const getBookings = async (req, res) => {
+const getBooking = async (req, res) => {
   console.log('Användare som försöker boka:', req.user);
 
   try {
-    const bookings = await Booking.find({ userId: req.user.id }).populate('roomId');
+    const query = req.user.role === 'Admin' ? {} : { userId: req.user.id };
+    const bookings = await Booking.find(query).populate('roomId');
     res.json(bookings);
   } catch (err) {
     res.status(500).json({ error: 'Kunde inte hämta bokningar' });
@@ -19,34 +20,48 @@ const createBooking = async (req, res) => {
   console.log('🔐 Inloggad användare:', req.user);
 
   try {
-    const { roomId, startDate, endDate, guests } = req.body;
+    const { roomId, startDate, endDate, guests, startTime, endTime } = req.body;
 
-    const room = await room.findById(roomId);
+    const room = await Rooms.findById(roomId);
     if (!room) {
-      return res.status(404).json({ error: 'Boendet kunde inte hittas' });
+      return res.status(404).json({ error: 'Rummet kunde inte hittas' });
     }
     
-    if (room.type === 'single' && guests > room.capacity) {
-      return res.status(400).json({ error: `Rummet rymmer max ${room.capacity} person` });
+    if (guests > room.capacity) {
+      return res.status(400).json({ error: `Rummet rymmer max ${room.capacity} personer` });
     }
 
-    const overlapping = await Booking.findOne({
+    if (room.type === 'hotel') {
+      // Validera hotellbokning
+      if (!startDate || !endDate) return res.status(400).json({ error: 'Datum saknas' });
+    }
+
+    if (room.type === 'conference') {
+      if (!startTime || !endTime || !date) {
+        return res.status(400).json({ error: 'Datum + Start- och sluttid krävs för konferensrum' });
+      };
+    }
+      
+      if (startTime >= endTime) {
+        return res.status(400).json({ error: 'Ogiltig tid' });
+      }
+
+      const overlapping = await Booking.findOne({
       roomId,
-      $or: [
-        {
-          startDate: { $lte: new Date(endDate) },
-          endDate: { $gte: new Date(startDate) }
-        }
-      ]
+      date,
+        $or: [
+         { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
+        ]
     });
-
-    if (overlapping) {
-      return res.status(400).json({ error: 'Rummet är redan bokat för den valda tiden' });
-    }
+    if (overlapping) return res.status(400).json({ error: 'Rummet är redan bokat för den valda tiden' });
+    
 
     const booking = new Booking({
       roomId,
       userId: req.user.id,
+      date,
+      startTime,
+      endTime,
       startDate,
       endDate,
       guests
@@ -67,18 +82,22 @@ const createBooking = async (req, res) => {
     console.error('❌ Fel vid skapande av bokning:', err);
     res.status(400).json({ error: 'Kunde inte skapa bokning', details: err.message });
   }
-};
+}
 
 const updateBooking = async (req, res) => {
   try {
-    const { startDate, endDate } = req.body;
-    const updatedBooking = await Booking.findByIdAndUpdate(
-      req.params.id,
-      { startDate, endDate },
-      { new: true, runValidators: true }
-    );
-    if (!updatedBooking) return res.status(404).json({ error: 'Bokning hittades inte' });
-    res.json(updatedBooking);
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ error: 'Bokning hittades inte' });
+
+    if (booking.userId.toString() !== req.user.id && req.user.role !== 'Admin') {
+      return res.status(403).json({ error: 'Du får inte ändra denna bokning' });
+    }
+   
+    booking.startDate = req.body.startDate;
+    booking.endDate = req.body.endDate;
+    await booking.save();
+
+    res.json(booking);
   } catch (err) {
     res.status(400).json({ error: 'Kunde inte uppdatera bokning', details: err.message });
   }
@@ -86,17 +105,19 @@ const updateBooking = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
   try {
-    const deletedBooking = await Booking.findByIdAndDelete(req.params.id);
-    if (!deletedBooking) return res.status(404).json({ error: 'Bokning hittades inte' });  
-     
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ error: 'Bokning hittades inte' });
+
+    if (booking.userId.toString() !== req.user.id && req.user.role !== 'Admin') {
+      return res.status(403).json({ error: 'Du får inte ta bort denna bokning' });
+    }  
+    await booking.deleteOne();
     res.json({ message: 'Bokning borttagen' });
-  }
-  catch (err) {
+  } catch (err) {
     res.status(500).json({ error: 'Kunde inte ta bort bokning', details: err.message });
   }   
-
 };
 
 
-module.exports = { getBookings, createBooking, updateBooking, deleteBooking };
+module.exports = { getBooking, createBooking, updateBooking, deleteBooking };
 

@@ -11,14 +11,12 @@ const {
 const verifyToken = require('../middleware/authMiddleware');
 const requireAdmin = require('../middleware/roleMiddleware');
 
-router.use(verifyToken); // Alla routes kräver inloggning
-
-router.get('/', verifyToken, getAllRooms);// Alla får läsa
+router.get('/', getAllRooms);// Alla får läsa
 
 // Endast admin får skapa, ändra, ta bort
-router.post('/', requireAdmin, createRooms);
-router.put('/:id', requireAdmin, updateRooms);
-router.delete('/:id', requireAdmin, deleteRooms);
+router.post('/', verifyToken, requireAdmin, createRooms);
+router.put('/:id', verifyToken, requireAdmin, updateRooms);
+router.delete('/:id', verifyToken, requireAdmin, deleteRooms);
 
 module.exports = router;
 

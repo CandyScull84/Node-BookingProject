@@ -1,21 +1,23 @@
 const mongoose = require('mongoose');
 
-function requireCapacityForCabin(value) {
-  // Om det inte är Cabin, bryr vi oss inte
-  if (this.type !== 'Cabin') return true;
+function requireCapacity(value) {
+  // Lista av rumstyper som MÅSTE ha kapacitet angivet
+   const typesRequiringCapacity = ['single', 'double', 'suite', 'conference'];
+
+  if (!typesRequiringCapacity.includes(this.type)) return true;
 
   // Om det är Cabin, måste capacity anges och > 0
   return typeof value === 'number' && value > 0;
 }
 
-const accommodationSchema = new mongoose.Schema({
+const roomSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
   type: {
     type: String,
-    enum: [ 'Cabin', 'Tent', 'Caravan', 'Campervan'],
+    enum: [ 'Single', 'Double', 'Suite', 'Conference'],
     required: true,
   },
   description: {
@@ -25,18 +27,34 @@ const accommodationSchema = new mongoose.Schema({
   capacity: {
     type: Number,
     validate: {
-      validator: requireCapacityForCabin,
-      message: 'Number of people is required when booking a cabin',
+      validator: requireCapacity,
+      message: 'Number of people is required when booking rooms',
     }
   },
-  size: {
-    type:{
-      length: {type: Number},
-      width: {type: Number},
-    }
-  },
+
   facilities: {
-    enum: ['Electricity', 'Water', 'Toilet', 'Shower', 'WiFi', 'Firepit'],
+    enum: [
+      // 🛏️ Rumsfaciliteter
+      'WiFi', 'TV', 'Airconditioning', 'Minibar', 'Balcony', 'Kettle', 'Coffee Maker', 'Desk', 'Safe', 'Hair Dryer',
+
+      // 🧖‍♀️ Wellness
+      'Sauna', 'Spa', 'Gym', 'Indoor Pool', 'Jacuzzi', 'Massage',
+
+      // 🍽️ Mat & Dryck
+      'Restaurant', 'Bar', 'Breakfast Buffet', 'Room Service', 
+
+      // 🧳 Tjänster
+      'Laundry', 'Luggage Storage', '24h Reception', 'Wake-up Service',
+
+      // 🅿️ Parkering & Transport
+      'Free Parking', 'EV Charger', 'Airport Shuttle', 'Bike Rental',
+
+      // 💼 Konferens
+      'Conference Room', 'Projector', 'Whiteboard', 'Sound System', 'Coffee/Water Station', 'Printer',
+
+      // 👶 Familjevänligt
+      'Cribs', 'Playroom', 'Babysitting'
+    ],
     type: [String],
   },
   pricePerNight: {
@@ -49,4 +67,4 @@ const accommodationSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Accommodation', accommodationSchema);
+module.exports = mongoose.model('Rooms', roomSchema);

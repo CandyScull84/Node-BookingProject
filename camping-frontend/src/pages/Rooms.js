@@ -17,10 +17,7 @@ import {
   Snackbar
 } from '@mui/material';
 
-const [bookingMsg, setBookingMsg] = useState('');
-const [bookingErrorMsg, setBookingErrorMsg] = useState('');
-const [showMsg, setShowMsg] = useState(false);
-const [showError, setShowError] = useState(false);
+
 
 
 export default function Rooms() {
@@ -32,6 +29,11 @@ export default function Rooms() {
     endDate: '',
     guests: 1
   });
+
+  const [bookingMsg, setBookingMsg] = useState('');
+  const [bookingErrorMsg, setBookingErrorMsg] = useState('');
+  const [showMsg, setShowMsg] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,27 +83,27 @@ export default function Rooms() {
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Alla Boenden</Typography>
+      <Typography variant="h4" gutterBottom>Alla Tillgängliga Rum</Typography>
       <Grid container spacing={3}>
-        {accommodations.map(acc => (
-          <Grid key={acc._id} lg={4} md={6} xs={12}>
+        {room.map(room => (
+          <Grid key={room._id} lg={4} md={6} xs={12}>
             <Card>
               <CardContent>
-                <Typography variant="h6">{acc.name}</Typography>
+                <Typography variant="h6">{room.name}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {acc.description}
+                  {room.description}
                 </Typography>
                 <Typography sx={{ mt: 1 }}>
-                  Typ: <b>{acc.type}</b>
+                  Typ: <b>{room.type}</b>
                 </Typography>
                 <Typography>
-                  Kapacitet: {acc.capacity || 'N/A'} personer
+                  Kapacitet: {room.capacity || 'N/A'} personer
                 </Typography>
                 <Typography>
-                  Pris: {acc.pricePerNight} kr/natt
+                  Pris: {room.pricePerNight} kr/natt
                 </Typography>
                 <div style={{ marginTop: 8 }}>
-                  {acc.facilities?.map((f, idx) => (
+                  {room.facilities?.map((f, idx) => (
                     <Chip key={idx} label={f} size="small" sx={{ mr: 0.5, mb: 0.5 }} />
                   ))}
                 </div>
@@ -109,7 +111,7 @@ export default function Rooms() {
               <CardActions>
                 <Button size="small" variant="outlined" 
                   onClick={() => {
-                    setSelectedRoom(acc);
+                    setSelectedRoom(room);
                     setRoomOpen(true);
                   }}>
                   Boka
@@ -148,7 +150,7 @@ export default function Rooms() {
             fullWidth
             value={form.guests}
             onChange={(e) => setRoomForm({ ...form, guests: parseInt(e.target.value) || 1 })}
-            inputProps={{ min: 1, max: selectedAccommodation?.capacity ?? 10 }}
+            inputProps={{ min: 1, max: selectedRoom?.capacity ?? 10 }}
           />
         </DialogContent>
         <DialogActions>
