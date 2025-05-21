@@ -1,14 +1,10 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import API from '../utils/API';
 import {
   Container,
   Typography,
   Grid,
-  Card,
-  CardContent,
-  CardActions,
   Button,
-  Chip,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -16,9 +12,8 @@ import {
   TextField,
   Snackbar
 } from '@mui/material';
-
-
-
+import RoomCard from '../components/RoomCard';
+import { getCurrentUser } from '../utils/auth';
 
 export default function Rooms() {
   const [room, setRoom] = useState([]);
@@ -35,6 +30,8 @@ export default function Rooms() {
   const [showMsg, setShowMsg] = useState(false);
   const [showError, setShowError] = useState(false);
 
+  const isAdmin = getCurrentUser()?.role === 'admin';
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,35 +45,48 @@ export default function Rooms() {
     fetchData();
   }, []);
 
-    const handleBooking = async () => {
-    if (!form.startDate || !form.endDate || !selectedRoom) {
-      alert('Vänligen fyll i alla fält.');
-      return;
-    }
+  const handleBooking = async () => {
+  if (!form.startDate || !form.endDate || !selectedRoom) {
+    alert('Vänligen fyll i alla fält.');
+    return;
+  }
 
-    console.log('📦 Skickar bokning:', {
+  console.log('📦 Skickar bokning:', {
+    roomId: selectedRoom._id,
+    startDate: form.startDate,
+    endDate: form.endDate,
+    guests: form.guests
+  });
+  
+  try {
+    await API.post('/booking', {
       roomId: selectedRoom._id,
       startDate: form.startDate,
       endDate: form.endDate,
       guests: form.guests
     });
-    
-    try {
-      await API.post('/booking', {
-        roomId: selectedRoom._id,
-        startDate: form.startDate,
-        endDate: form.endDate,
-        guests: form.guests
-      });
 
+    setShowMsg(true);
+    setBookingMsg('Bokning lyckades!');
+    setRoomOpen(false);
+    setRoomForm({ startDate: '', endDate: '', guests: 1 });
+  } catch (err) {
+    console.error('❌ Fel vid bokning:', err.response?.data || err.message);
+    setBookingErrorMsg(err.response?.data?.details || 'Bokning misslyckades');
+    setShowError(true);
+  }
+};
+
+  const handleDeleteRoom = async (roomId) => {
+    if (!window.confirm('Vill du verkligen ta bort rummet?')) return;
+    try {
+      await API.delete(`/rooms/${roomId}`);
+      setRoom(room.filter(r => r._id !== roomId));
+      setBookingMsg('Rum borttaget');
       setShowMsg(true);
-      setBookingMsg('Bokning lyckades!');
-     
-      setRoomOpen(false);
-      setRoomForm({ startDate: '', endDate: '', guests: 1 });
     } catch (err) {
-      console.error('❌ Fel vid bokning:', err.response?.data || err.message);
-      setBookingErrorMsg(err.response?.data?.details || 'Bokning misslyckades');
+      console.error('Kunde inte ta bort rum:', err);
+      setBookingErrorMsg('Raderingen misslyckades');
       setShowError(true);
     }
   };
@@ -85,41 +95,20 @@ export default function Rooms() {
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>Alla Tillgängliga Rum</Typography>
       <Grid container spacing={3}>
-        {room.map(room => (
-          <Grid key={room._id} lg={4} md={6} xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{room.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {room.description}
-                </Typography>
-                <Typography sx={{ mt: 1 }}>
-                  Typ: <b>{room.type}</b>
-                </Typography>
-                <Typography>
-                  Kapacitet: {room.capacity || 'N/A'} personer
-                </Typography>
-                <Typography>
-                  Pris: {room.pricePerNight} kr/natt
-                </Typography>
-                <div style={{ marginTop: 8 }}>
-                  {room.facilities?.map((f, idx) => (
-                    <Chip key={idx} label={f} size="small" sx={{ mr: 0.5, mb: 0.5 }} />
-                  ))}
-                </div>
-              </CardContent>
-              <CardActions>
-                <Button size="small" variant="outlined" 
-                  onClick={() => {
-                    setSelectedRoom(room);
-                    setRoomOpen(true);
-                  }}>
-                  Boka
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
+       {room.map(r => (
+        <Grid key={r._id} item xs={12} sm={6} md={4}>
+         <RoomCard
+            room={r}
+            onBook={() => {
+              setSelectedRoom(r);
+              setRoomOpen(true);
+            }}
+            onEdit={handleEditRoom}
+            onDelete={handleDeleteRoom}
+            isAdmin={isAdmin}
+         />
+        </Grid>
+      ))}
       </Grid>
 
         {/* Dialogruta */}
