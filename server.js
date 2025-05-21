@@ -5,7 +5,7 @@ const cors = require('cors');
 const http = require('http');
 
 const authRoutes = require('./routes/authRoutes');
-const accommodationRoutes = require('./routes/accommodationRoutes');
+const roomRoutes = require('./routes/roomRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const {setupSocketIO} = require('./utils/socket');
 
@@ -26,10 +26,10 @@ mongoose.connect(process.env.MONGO_URI)
     process.exit(1);
   });
   // console.log('verifyToken:', typeof verifyToken);
-  // console.log('accommodationRoutes:', typeof accommodationRoutes);
+  // console.log('roomRoutes:', typeof roomRoutes);
 //Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/accommodation', accommodationRoutes);
+app.use('/api/rooms', roomRoutes);
 app.use('/api/booking', bookingRoutes);
 
 server.listen(process.env.PORT || 5000, () => {

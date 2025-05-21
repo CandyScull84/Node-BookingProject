@@ -1,0 +1,24 @@
+const express = require('express');
+const router = express.Router();
+
+const {
+  createRooms,
+  getAllRooms,
+  updateRooms,
+  deleteRooms
+} = require('../controllers/roomController');
+
+const verifyToken = require('../middleware/authMiddleware');
+const requireAdmin = require('../middleware/roleMiddleware');
+
+router.use(verifyToken); // Alla routes kräver inloggning
+
+router.get('/', verifyToken, getAllRooms);// Alla får läsa
+
+// Endast admin får skapa, ändra, ta bort
+router.post('/', requireAdmin, createRooms);
+router.put('/:id', requireAdmin, updateRooms);
+router.delete('/:id', requireAdmin, deleteRooms);
+
+module.exports = router;
+
