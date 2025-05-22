@@ -5,35 +5,48 @@ const cors = require('cors');
 const http = require('http');
 
 const { connectRedis } = require('./utils/redisClient');
+const {setupSocketIO} = require('./utils/socket');
+
 const authRoutes = require('./routes/authRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
-const {setupSocketIO} = require('./utils/socket');
+
 
 const app = express();
 const server = http.createServer(app);
-setupSocketIO(server);
 
-app.use(cors({
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-}));
-app.use(express.json());
+async function startServer() {
+  try {
+    
+    await connectRedis();
+    console.log('✅ Redis connected');
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected...'))
-  .catch((error) => {
-    console.error('MongoDB connection error:', error.message);
-    process.exit(1);
-  });
-  // console.log('verifyToken:', typeof verifyToken);
-  // console.log('roomRoutes:', typeof roomRoutes);
-//Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/rooms', roomRoutes);
-app.use('/api/booking', bookingRoutes);
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('✅ MongoDB connected');
 
-server.listen(process.env.PORT || 5000, async () => {
-  await connectRedis();
-  console.log(`Server is running on port ${process.env.PORT || 5000}`);
-});
+    setupSocketIO(server);
+
+    app.use(cors({
+      origin: process.env.CLIENT_URL,
+      credentials: true,
+    }));
+    app.use(express.json());
+
+    
+    app.use('/api/auth', authRoutes);
+    app.use('/api/rooms', roomRoutes);
+    app.use('/api/booking', bookingRoutes);
+
+    
+    const PORT = process.env.PORT || 8080;
+    server.listen(PORT, () => {
+      console.log(`🚀 Server körs på port ${PORT}`);
+    });
+
+  } catch (err) {
+    console.error('❌ Serverfel vid uppstart:', err.message);
+    process.exit(1); // Avsluta med felkod
+  }
+}
+
+startServer();
