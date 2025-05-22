@@ -35,6 +35,5 @@ app.use('/api/booking', bookingRoutes);
 
 server.listen(process.env.PORT || 5000, async () => {
   await connectRedis();
-  console.log(`✅ Redis connected`);
   console.log(`Server is running on port ${process.env.PORT || 5000}`);
 });
