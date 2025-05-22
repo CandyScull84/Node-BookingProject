@@ -17,3 +17,24 @@ export const ROOM_TYPES = [
 export const DEFAULT_ROOM_IMAGE = '/images/default-room.jpg'; // Om ingen bild finns
 
 export const ROLES = ['User', 'Admin'];
+
+export const DEFAULT_MESSAGES = {
+  ROOM_CREATED: 'Rum skapat',
+  ROOM_UPDATED: 'Rum uppdaterat',
+  ROOM_DELETED: 'Rum borttaget',
+  ROOM_SAVE_FAILED: 'Kunde inte spara rummet',
+  BOOKING_SUCCESS: 'Bokning lyckades!',
+  BOOKING_FAILED: 'Bokning misslyckades',
+  BOOKING_DELETED: 'Bokning borttagen',
+  BOOKING_UPDATED: 'Bokning uppdaterad!',
+  DELETE_CONFIRM: 'Vill du verkligen ta bort detta?'
+};
+
+export const DIALOG_TITLES = {
+  DELETE_ROOM: 'Bekräfta borttagning',
+  DELETE_BOOKING: 'Ta bort bokning',
+};
+export const DIALOG_CONTENTS = {
+  DELETE_ROOM: 'Vill du verkligen ta bort detta rum?',
+  DELETE_BOOKING: 'Vill du verkligen ta bort denna bokning?'
+};

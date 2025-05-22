@@ -9,19 +9,24 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
-  Snackbar
 } from '@mui/material';
 import RoomCard from '../components/RoomCard';
 import { getCurrentUser } from '../utils/auth';
+import SnackbarAlert from '../components/SnackbarAlert';
+import { ROOM_TYPES } from '../constants/sharedData'; 
+import BookingForm from '../components/BookingForm';
 
 export default function Rooms() {
+  const currentUser = useCurrentUser(); // ⬅️ ersätter getCurrentUser()
   const [room, setRoom] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [open, setRoomOpen] = useState(false);
   const [form, setRoomForm] = useState({
     startDate: '',
     endDate: '',
+    date: '',
+    startTime: '',
+    endTime: '',
     guests: 1
   });
 
@@ -29,8 +34,6 @@ export default function Rooms() {
   const [bookingErrorMsg, setBookingErrorMsg] = useState('');
   const [showMsg, setShowMsg] = useState(false);
   const [showError, setShowError] = useState(false);
-
-  const isAdmin = getCurrentUser()?.role === 'admin';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,51 +48,62 @@ export default function Rooms() {
     fetchData();
   }, []);
 
-  const handleBooking = async () => {
-  if (!form.startDate || !form.endDate || !selectedRoom) {
-    alert('Vänligen fyll i alla fält.');
-    return;
-  }
+   const handleBooking = async () => {
+    if (!selectedRoom) return;
 
-  console.log('📦 Skickar bokning:', {
-    roomId: selectedRoom._id,
-    startDate: form.startDate,
-    endDate: form.endDate,
-    guests: form.guests
-  });
-  
-  try {
-    await API.post('/booking', {
+    const isHotel = selectedRoom.type.toLowerCase() === 'hotel' || selectedRoom.type.toLowerCase() === 'workspace';
+    const isConference = selectedRoom.type.toLowerCase() === 'conference';
+
+    // Enkel validering
+    if (isHotel && (!form.startDate || !form.endDate)) {
+      alert('Fyll i start- och slutdatum.');
+      return;
+    }
+    if (isConference && (!form.date || !form.startTime || !form.endTime)) {
+      alert('Fyll i datum samt start- och sluttid.');
+      return;
+    }
+
+    const bookingData = {
       roomId: selectedRoom._id,
-      startDate: form.startDate,
-      endDate: form.endDate,
       guests: form.guests
-    });
+    };
 
-    setShowMsg(true);
-    setBookingMsg('Bokning lyckades!');
-    setRoomOpen(false);
-    setRoomForm({ startDate: '', endDate: '', guests: 1 });
-  } catch (err) {
-    console.error('❌ Fel vid bokning:', err.response?.data || err.message);
-    setBookingErrorMsg(err.response?.data?.details || 'Bokning misslyckades');
-    setShowError(true);
-  }
-};
+    if (isHotel) {
+      bookingData.startDate = form.startDate;
+      bookingData.endDate = form.endDate;
+    }
 
-  const handleDeleteRoom = async (roomId) => {
-    if (!window.confirm('Vill du verkligen ta bort rummet?')) return;
+    if (isConference) {
+      bookingData.date = form.date;
+      bookingData.startTime = form.startTime;
+      bookingData.endTime = form.endTime;
+    }
+
     try {
-      await API.delete(`/rooms/${roomId}`);
-      setRoom(room.filter(r => r._id !== roomId));
-      setBookingMsg('Rum borttaget');
+      await API.post('/booking', bookingData);
       setShowMsg(true);
+      setBookingMsg('Bokning lyckades!');
+      setRoomOpen(false);
+      resetForm();
     } catch (err) {
-      console.error('Kunde inte ta bort rum:', err);
-      setBookingErrorMsg('Raderingen misslyckades');
+      console.error('❌ Fel vid bokning:', err.response?.data || err.message);
+      setBookingErrorMsg(err.response?.data?.details || 'Bokning misslyckades');
       setShowError(true);
     }
   };
+
+  const resetForm = () => {
+    setRoomForm({
+      startDate: '',
+      endDate: '',
+      date: '',
+      startTime: '',
+      endTime: '',
+      guests: 1
+    });
+  };
+
 
   return (
     <Container sx={{ mt: 4 }}>
@@ -103,9 +117,7 @@ export default function Rooms() {
               setSelectedRoom(r);
               setRoomOpen(true);
             }}
-            onEdit={handleEditRoom}
-            onDelete={handleDeleteRoom}
-            isAdmin={isAdmin}
+            isAdmin={currentUser?.role === 'Admin'}
          />
         </Grid>
       ))}
@@ -115,53 +127,15 @@ export default function Rooms() {
       <Dialog open={open} onClose={() => setRoomOpen(false)}>
         <DialogTitle>Boka: {selectedRoom?.name}</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Startdatum"
-            type="date"
-            fullWidth
-            value={form.startDate}
-            onChange={(e) => setRoomForm({ ...form, startDate: e.target.value })}
-            InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Slutdatum"
-            type="date"
-            fullWidth
-            value={form.endDate}
-            onChange={(e) => setRoomForm({ ...form, endDate: e.target.value })}
-            InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Antal gäster"
-            type="number"
-            fullWidth
-            value={form.guests}
-            onChange={(e) => setRoomForm({ ...form, guests: parseInt(e.target.value) || 1 })}
-            inputProps={{ min: 1, max: selectedRoom?.capacity ?? 10 }}
-          />
+           <BookingForm form={form} setForm={setRoomForm} room={selectedRoom} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setRoomOpen(false)}>Avbryt</Button>
           <Button onClick={handleBooking} variant="contained">Boka</Button>
         </DialogActions>
       </Dialog>
-      <Snackbar
-        open={showMsg}
-        autoHideDuration={3000}
-        onClose={() => setShowMsg(false)}
-        message={bookingMsg}
-      >
-      </Snackbar>  
-      <Snackbar
-        open={showError}
-        autoHideDuration={3000}
-        onClose={() => setShowError(false)}
-        message={bookingErrorMsg}
-      >
-      </Snackbar>
-
+      <SnackbarAlert open={showMsg} message={bookingMsg} severity="success" onClose={() => setShowMsg(false)} />
+      <SnackbarAlert open={showError} message={bookingErrorMsg} severity="error" onClose={() => setShowError(false)} />
     </Container>
   );
 }

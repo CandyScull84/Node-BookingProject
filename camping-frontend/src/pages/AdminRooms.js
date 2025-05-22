@@ -2,23 +2,22 @@ import { useEffect, useState } from 'react';
 import API from '../utils/API';
 import {
   Container, Grid, Typography, Dialog, DialogTitle,
-  DialogContent, DialogActions, TextField, Button, Snackbar, Select, MenuItem, InputLabel, FormControl, OutlinedInput, Checkbox, ListItemText 
+  DialogContent, DialogActions, Button 
 } from '@mui/material';
 import RoomCard from '../components/RoomCard';
 import { FACILITIES, ROOM_TYPES } from '../constants/sharedData'; 
+import SnackbarAlert from '../components/SnackbarAlert';
+import ConfirmDialog from '../components/ConfirmDialog';
+import RoomForm from '../components/RoomForm';
 
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: 300,
-    },
-  },
-};
 
 export default function AdminRooms() {
   const [rooms, setRooms] = useState([]);
   const [openForm, setOpenForm] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [roomToDelete, setRoomToDelete] = useState(null);
   const [editingRoom, setEditingRoom] = useState(null); // null = nytt rum
+  
   const [form, setForm] = useState({
     name: '',
     type: '',
@@ -43,18 +42,20 @@ export default function AdminRooms() {
     fetchRooms();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Vill du ta bort rummet?')) return;
-    try {
-      await API.delete(`/rooms/${id}`);
-      fetchRooms();
-      showMessage('Rum borttaget');
-    } catch {
-      showMessage('Kunde inte ta bort rum');
-    }
+ // 🧹 Nollställ formulär
+  const resetForm = () => {
+    setEditingRoom(null);
+    setForm({
+      name: '',
+      type: '',
+      capacity: '',
+      description: '',
+      pricePerNight: '',
+      facilities: [],
+    });
   };
 
-  const handleSave = async () => {
+   const handleSave = async () => {
     try {
       if (editingRoom) {
         await API.put(`/rooms/${editingRoom._id}`, form);
@@ -71,21 +72,30 @@ export default function AdminRooms() {
     }
   };
 
+  // 🗑️ Bekräfta radering
+  const handleDelete = (room) => {
+    setRoomToDelete(room);
+    setConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!roomToDelete) return;
+    try {
+      await API.delete(`/rooms/${roomToDelete._id}`);
+      showMessage('Rum borttaget');
+      fetchRooms();
+    } catch {
+      showMessage('Kunde inte ta bort rum');
+    } finally {
+      setConfirmOpen(false);
+      setRoomToDelete(null);
+    }
+  };
+
+
   const showMessage = (text) => {
     setMsg(text);
     setShowMsg(true);
-  };
-
-  const resetForm = () => {
-    setEditingRoom(null);
-    setForm({
-      name: '',
-      type: '',
-      capacity: '',
-      description: '',
-      pricePerNight: '',
-      facilities: [],
-    });
   };
 
   return (
@@ -127,68 +137,7 @@ export default function AdminRooms() {
       <Dialog open={openForm} onClose={() => setOpenForm(false)}>
         <DialogTitle>{editingRoom ? 'Redigera rum' : 'Skapa nytt rum'}</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Namn"
-            fullWidth
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            sx={{ mb: 2 }}
-          />
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="type-label">Typ</InputLabel>
-            <Select
-              labelId="type-label"
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value })}
-              input={<OutlinedInput label="Typ" />}
-            >
-              {ROOM_TYPES.map(type => (
-                <MenuItem key={type} value={type}>{type}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            label="Kapacitet"
-            type="number"
-            fullWidth
-            value={form.capacity}
-            onChange={(e) => setForm({ ...form, capacity: e.target.value })}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Beskrivning"
-            fullWidth
-            multiline
-            rows={2}
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Pris per natt"
-            type="number"
-            fullWidth
-            value={form.pricePerNight}
-            onChange={(e) => setForm({ ...form, pricePerNight: e.target.value })}
-          />
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="facilities-label">Faciliteter</InputLabel>
-            <Select
-              labelId="facilities-label"
-              multiple
-              value={form.facilities}
-              onChange={(e) => setForm({ ...form, facilities: e.target.value })}
-              input={<OutlinedInput label="Faciliteter" />}
-              renderValue={(selected) => selected.join(', ')}
-            >
-              {FACILITIES.map((facility) => (
-                <MenuItem key={facility} value={facility}>
-                  <Checkbox checked={form.facilities.indexOf(facility) > -1} />
-                  <ListItemText primary={facility} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <RoomForm form={form} setForm={setForm} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenForm(false)}>Avbryt</Button>
@@ -197,12 +146,13 @@ export default function AdminRooms() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={showMsg}
-        autoHideDuration={3000}
-        onClose={() => setShowMsg(false)}
-        message={msg}
+      <SnackbarAlert open={showMsg} message={msg} onClose={() => setShowMsg(false)} />
+      <ConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Bekräfta borttagning"
+        message={`Vill du verkligen ta bort rummet "${roomToDelete?.name}"?`}
       />
     </Container>
   );

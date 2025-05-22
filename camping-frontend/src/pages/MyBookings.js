@@ -12,10 +12,9 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Snackbar,
-  Alert
 } from '@mui/material';
 import dayjs from 'dayjs';
+import SnackbarAlert from '../components/SnackbarAlert';
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
@@ -131,28 +130,8 @@ export default function MyBookings() {
           <Button onClick={handleUpdate} variant="contained">Spara</Button>
         </DialogActions>
       </Dialog>
-
-          {/* Snackbar för bekräftelse */}
-      <Snackbar
-        open={!!bookingMsg}
-        autoHideDuration={3000}
-        onClose={() => setBookingMsg('')}
-      >
-        <Alert onClose={() => setBookingMsg('')} severity="success" sx={{ width: '100%' }}>
-          {bookingMsg}
-        </Alert>
-      </Snackbar>
-
-      {/* Snackbar för fel */}
-      <Snackbar
-        open={!!bookingErrorMsg}
-        autoHideDuration={4000}
-        onClose={() => setBookingErrorMsg('')}
-      >
-        <Alert onClose={() => setBookingErrorMsg('')} severity="error" sx={{ width: '100%' }}>
-          {bookingErrorMsg}
-        </Alert>
-      </Snackbar>
+      <SnackbarAlert open={!!bookingMsg} message={bookingMsg} severity="success" onClose={() => setBookingMsg('')} />
+      <SnackbarAlert open={!!bookingErrorMsg} message={bookingErrorMsg} severity="error" onClose={() => setBookingErrorMsg('')} />
     </Container>
   );
 }
