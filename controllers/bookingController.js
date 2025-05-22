@@ -125,6 +125,9 @@ const updateBooking = async (req, res) => {
     booking.endDate = req.body.endDate;
     await booking.save();
 
+    const io = getIo();
+    io.emit('bookingUpdated', { bookingId: booking._id, updatedBy: req.user.username });  
+
     res.json(booking);
   } catch (err) {
     res.status(400).json({ error: 'Kunde inte uppdatera bokning', details: err.message });
@@ -140,6 +143,10 @@ const deleteBooking = async (req, res) => {
       return res.status(403).json({ error: 'Du får inte ta bort denna bokning' });
     }  
     await booking.deleteOne();
+
+    const io = getIo();
+    io.emit('bookingDeleted', { bookingId: booking._id, deletedBy: req.user.username });
+
     res.json({ message: 'Bokning borttagen' });
   } catch (err) {
     res.status(500).json({ error: 'Kunde inte ta bort bokning', details: err.message });
