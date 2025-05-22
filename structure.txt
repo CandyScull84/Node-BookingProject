@@ -1,12 +1,13 @@
  
 camping-booking/
-│
+|
+|
 ├── config/
 │   └── db.js                     # Databansanslutning
 │
 ├── controllers/
 │   ├── authController.js        # Register/Login
-│   ├── accomodationController.js        # Hantera platser
+│   ├── roomController.js        # Hantera platser
 │   └── bookingController.js     # Hantera bokningar
 │
 ├── middleware/
@@ -20,12 +21,13 @@ camping-booking/
 │
 ├── routes/
 │   ├── authRoutes.js
-│   ├── accomodationRoutes.js
+│   ├── roomRoutes.js
 │   └── bookingRoutes.js
 │
 ├── utils/
 │   └── socket.js                # WebSocket notifieringar
-│
+│   └── redisClient.js           # Cache-hantering
+|
 ├── .env                         # Miljövariabler (hemligheter)
 ├── .gitignore                   # Ignorera node_modules m.m.
 ├── package.json
