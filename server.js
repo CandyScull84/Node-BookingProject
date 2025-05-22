@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
 
-const { redisClient } = require('./utils/redisClient');
+const { connectRedis } = require('./utils/redisClient');
 const authRoutes = require('./routes/authRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
@@ -33,7 +33,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/booking', bookingRoutes);
 
-server.listen(process.env.PORT || 5000, () => {
-  connectRedis();
+server.listen(process.env.PORT || 5000, async () => {
+  await connectRedis();
+  console.log(`✅ Redis connected`);
   console.log(`Server is running on port ${process.env.PORT || 5000}`);
 });
