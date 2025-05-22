@@ -22,17 +22,17 @@ Välkommen till **Hotell Lunden** – en modern bokningsplattform för arbetspla
 
 ## 🧱 Teknikstack
 
-| Teknologi      | Användning                     |
-|----------------|---------------------------------|
-| Node.js        | Backend-server                 |
-| Express.js     | Routing och middleware         |
-| MongoDB + Mongoose | Databas och modeller       |
-| JWT + bcrypt   | Autentisering & lösenordshantering |
-| Socket.io      | Realtidsnotifieringar          |
-| Redis          | Caching av data (rum och användare) |
-| React.js       | Frontend UI                    |
-| Material UI    | Komponentbibliotek (UI)        |
-| Axios          | HTTP-anrop i frontend          |
+| Teknologi          | Användning                          |
+|--------------------|-------------------------------------|
+| Node.js            | Backend-server                      |
+| Express.js         | Routing och middleware              |
+| MongoDB + Mongoose | Databas och modeller                |
+| JWT + bcrypt       | Autentisering & lösenordshantering  |
+| Socket.io          | Realtidsnotifieringar               |
+| Redis              | Caching av data (rum och användare) |
+| React.js           | Frontend UI                         |
+| Material UI        | Komponentbibliotek (UI)             |
+| Axios              | HTTP-anrop i frontend               |
 
 ---
 
@@ -66,7 +66,7 @@ SOCKET_URL=ws://localhost:5000
 
 ## 🧩 Installation (Lokalt)
 
-```bash
+
 # Klona projektet
 git clone <repo-url>
 cd hotell-lunden
@@ -81,13 +81,13 @@ npm install
 ```
 
 ### Starta projektet
-```bash
+
 # Backend
 cd backend
 node server.js
 
 # Frontend
-cd frontend
+cd Hotell-frontend
 npm start
 ```
 
@@ -103,20 +103,20 @@ npm start
 | GET   | /api/auth/all        | Admin    | Hämta alla användare     |
 
 ### 🏠 Rum
-| Metod | URL                  | Roll     | Beskrivning                |
-|-------|----------------------|----------|-----------------------------|
-| GET   | /api/rooms           | Alla     | Lista alla rum              |
-| POST  | /api/rooms           | Admin    | Skapa nytt rum              |
-| PUT   | /api/rooms/:id       | Admin    | Uppdatera rum               |
-| DELETE| /api/rooms/:id       | Admin    | Ta bort rum                 |
+| Metod | URL                  | Roll     | Beskrivning              |
+|-------|----------------------|----------|--------------------------|
+| GET   | /api/rooms           | Alla     | Lista alla rum           |
+| POST  | /api/rooms           | Admin    | Skapa nytt rum           |
+| PUT   | /api/rooms/:id       | Admin    | Uppdatera rum            |
+| DELETE| /api/rooms/:id       | Admin    | Ta bort rum              |
 
 ### 📅 Bokningar
-| Metod | URL                    | Roll        | Beskrivning                       |
-|-------|------------------------|-------------|------------------------------------|
-| GET   | /api/booking           | User/Admin  | Hämta bokningar                   |
-| POST  | /api/booking           | User/Admin  | Skapa ny bokning                  |
-| PUT   | /api/booking/:id       | User/Admin  | Uppdatera bokning (om ägare)     |
-| DELETE| /api/booking/:id       | User/Admin  | Radera bokning (om ägare)        |
+| Metod  | URL               | Roll        | Beskrivning                      |
+|--------|-------------------|-------------|----------------------------------|
+| GET    | /api/booking      | User/Admin  | Hämta bokningar                  |
+| POST   | /api/booking      | User/Admin  | Skapa ny bokning                 |
+| PUT    | /api/booking/:id  | User/Admin  | Uppdatera bokning (om ägare)     |
+| DELETE | /api/booking/:id  | User/Admin  | Radera bokning (om ägare)        |
 
 ---
 
@@ -165,6 +165,7 @@ npm start
 
 ```
 /backend
+  /config
   /controllers
   /models
   /routes
@@ -174,6 +175,7 @@ npm start
   .env
 /frontend
   /components
+  /constants
   /pages
   /hooks
   /utils
