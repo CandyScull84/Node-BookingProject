@@ -4,11 +4,12 @@ const { register, login } = require('../controllers/authController');
 const verifyToken = require('../middleware/authMiddleware');
 const User = require('../models/User');
 const requireAdmin = require('../middleware/roleMiddleware');
+const Cache = require('../middleware/cacheMiddleware');
 
 router.post('/register', register);
 router.post('/login', login);
 
-router.get('/all', verifyToken, requireAdmin, async (req, res) => {
+router.get('/all', verifyToken, requireAdmin, caches, async (req, res) => {
   try {
     const Users = await User.find();
     res.json(Users);

@@ -10,8 +10,9 @@ const {
 
 const verifyToken = require('../middleware/authMiddleware');
 const requireAdmin = require('../middleware/roleMiddleware');
+const Cache = require('../middleware/cacheMiddleware');
 
-router.get('/', getAllRooms);// Alla får läsa
+router.get('/', Cache, getAllRooms);// Alla får läsa
 
 // Endast admin får skapa, ändra, ta bort
 router.post('/', verifyToken, requireAdmin, createRooms);
