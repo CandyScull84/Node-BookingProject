@@ -1,10 +1,11 @@
 // components/BookingForm.js
 import { TextField } from '@mui/material';
-
+import useCurrentUser from '../hooks/useCurrentUser';
 export default function BookingForm({ form, setForm, room }) {
   const isHotel = room?.type?.toLowerCase() === 'hotel';
   const isConference = room?.type?.toLowerCase() === 'conference';
-
+  const currentUser = useCurrentUser();
+  
   return (
     <>
       {isHotel && (
@@ -61,6 +62,12 @@ export default function BookingForm({ form, setForm, room }) {
           />
         </>
       )}
+      
+      <TextField
+        label="Användare"
+        disabled
+        value={currentUser?.username}
+      />
 
       <TextField
         label="Antal gäster"

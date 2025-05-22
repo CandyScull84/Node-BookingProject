@@ -10,21 +10,33 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
-  TextField,
+  DialogActions
 } from '@mui/material';
 import dayjs from 'dayjs';
 import SnackbarAlert from '../components/SnackbarAlert';
+import useCurrentUser from '../hooks/useCurrentUser';
+import ConfirmDialog from '../components/ConfirmDialog';
+import BookingForm from '../components/BookingForm';
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ startDate: '', endDate: '' });
+  const [form, setForm] = useState({ 
+    startDate: '', 
+    endDate: '',
+    date: '',
+    startTime: '',
+    endTime: '',
+    guests: 1});
 
-    // Snackbar
+    // Snackbar & ConfirmDialog
   const [bookingMsg, setBookingMsg] = useState('');
   const [bookingErrorMsg, setBookingErrorMsg] = useState('');
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [bookingToDelete, setBookingToDelete] = useState(null);
+
+  const currentUser = useCurrentUser();
 
   const fetchBookings = async () => {
     try {
@@ -35,12 +47,13 @@ export default function MyBookings() {
     }
   };
 
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
   const handleUpdate = async () => {
     try {
-      await API.put(`/booking/${selectedBooking._id}`, {
-        startDate: form.startDate,
-        endDate: form.endDate
-      });
+      await API.put(`/booking/${selectedBooking._id}`, form )
       setOpen(false);
       setBookingMsg('Bokning uppdaterad!');
       fetchBookings();
@@ -49,25 +62,32 @@ export default function MyBookings() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Vill du ta bort bokningen?')) return;
+  const handleDelete = (booking) => {
+    setBookingToDelete(booking);
+    setConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!bookingToDelete) return;
     try {
-      await API.delete(`/booking/${id}`);
+      await API.delete(`/booking/${bookingToDelete._id}`);
       setBookingMsg('Bokning borttagen');
       fetchBookings();
-    } catch (err) {
+    } catch {
       setBookingErrorMsg('Kunde inte ta bort bokningen');
+    } finally {
+      setConfirmOpen(false);
+      setBookingToDelete(null);
     }
   };
 
-  useEffect(() => {
-    fetchBookings();
-  }, []);
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Mina Bokningar</Typography>
-
+      <Typography variant="h4" gutterBottom>Mina Bokningar{currentUser?.username && `– ${currentUser.username}`}</Typography>
+      {bookings.length === 0 ? (
+        <Typography>Du har inga bokningar ännu.</Typography>
+      ) : (
       <Grid container spacing={3}>
         {bookings.map((b) => (
           <Grid item xs={12} sm={6} md={4} key={b._id}>
@@ -85,7 +105,11 @@ export default function MyBookings() {
                   setSelectedBooking(b);
                   setForm({
                     startDate: b.startDate.slice(0, 10),
-                    endDate: b.endDate.slice(0, 10)
+                    endDate: b.endDate.slice(0, 10),
+                    date: '',  
+                    startTime: '',
+                    endTime: '',
+                    guests: b.guests
                   });
                   setOpen(true);
                 }}
@@ -103,33 +127,26 @@ export default function MyBookings() {
           </Grid>
         ))}
       </Grid>
-
+      )}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Uppdatera bokning</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Startdatum"
-            type="date"
-            fullWidth
-            value={form.startDate}
-            onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-            InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Slutdatum"
-            type="date"
-            fullWidth
-            value={form.endDate}
-            onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-            InputLabelProps={{ shrink: true }}
-          />
+          <BookingForm form={form} setForm={setForm} room={selectedBooking?.roomId} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Avbryt</Button>
           <Button onClick={handleUpdate} variant="contained">Spara</Button>
         </DialogActions>
       </Dialog>
+      
+      <ConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Bekräfta borttagning"
+        message="Vill du verkligen ta bort bokningen?"
+      />
+      
       <SnackbarAlert open={!!bookingMsg} message={bookingMsg} severity="success" onClose={() => setBookingMsg('')} />
       <SnackbarAlert open={!!bookingErrorMsg} message={bookingErrorMsg} severity="error" onClose={() => setBookingErrorMsg('')} />
     </Container>

@@ -11,7 +11,7 @@ import {
   DialogActions,
 } from '@mui/material';
 import RoomCard from '../components/RoomCard';
-import { getCurrentUser } from '../utils/auth';
+import useCurrentUser from '../hooks/useCurrentUser';
 import SnackbarAlert from '../components/SnackbarAlert';
 import { ROOM_TYPES } from '../constants/sharedData'; 
 import BookingForm from '../components/BookingForm';
@@ -123,7 +123,6 @@ export default function Rooms() {
       ))}
       </Grid>
 
-        {/* Dialogruta */}
       <Dialog open={open} onClose={() => setRoomOpen(false)}>
         <DialogTitle>Boka: {selectedRoom?.name}</DialogTitle>
         <DialogContent>
