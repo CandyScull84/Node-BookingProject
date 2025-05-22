@@ -1,4 +1,4 @@
-const Booking = require('../models/booking');
+const Booking = require('../models/Booking');
 const {getIo}  = require('../utils/socket');
 const Rooms = require('../models/Rooms');
 
