@@ -1,10 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import logo from './logo.svg';
+import Home from './pages/Home';
 import Header from './components/Header';
 import './App.css';
 import Register from './pages/Register';
 import Rooms from './pages/Rooms';
 import AdminRooms from './pages/AdminRooms';
+import AdminUsers from './pages/AdminUsers';
 import Login from './pages/Login';
 import MyBookings from './pages/MyBookings';
 import { useEffect, useState } from 'react';
@@ -50,11 +52,13 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/rooms" element={<Rooms />} />
-        <Route path="/admin/rooms" element={<AdminRooms />} />
         <Route path="/booking" element={<MyBookings />} />
+        <Route path="/admin/rooms" element={<AdminRooms />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
       </Routes>
        <SnackbarAlert
         open={!!notif}
