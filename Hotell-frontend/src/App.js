@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import logo from './logo.svg';
-import Home from './pages/Home';
 import Header from './components/Header';
+import Home from './pages/Home';
 import './App.css';
 import Register from './pages/Register';
 import Rooms from './pages/Rooms';
@@ -13,6 +13,9 @@ import { useEffect, useState } from 'react';
 import socket from './utils/socket';
 import SnackbarAlert from './components/SnackbarAlert';
 import useCurrentUser from './hooks/useCurrentUser';
+import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
+
 
 function App() {
   const [ notif, setNotif ] = useState('');
@@ -55,6 +58,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/user/dashboard" element={<UserDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/rooms" element={<Rooms />} />
         <Route path="/booking" element={<MyBookings />} />
         <Route path="/admin/rooms" element={<AdminRooms />} />

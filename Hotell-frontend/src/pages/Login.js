@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-// import { TextField, Button, Box, Typography } from '@mui/material';
+import { getCurrentUser } from '../utils/auth';
+import { useState } from 'react';
 import { Container, TextField, Button, Typography } from '@mui/material';
 import API from '../utils/API'; // Adjust the import path as necessary
 import { useNavigate } from 'react-router-dom'; 
 
 export default function Login() {
-  const [form, setForm] = useState({ username: '', password: '', email: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,7 +16,14 @@ export default function Login() {
     try {
       const res = await API.post('/auth/login', form);
       localStorage.setItem('authToken', res.data.token);
-      navigate('/rooms');
+      
+      const user = getCurrentUser();
+
+      if (user?.role === 'Admin') {
+      navigate('/admin/dashboard');
+    } else {
+      navigate('/user/dashboard');
+    }
     } catch (err) {
       alert('Inloggning misslyckades');
     }
@@ -31,51 +38,5 @@ export default function Login() {
     </Container>
   );
 
-  // return (
-  //   <Box
-  //     display="flex"
-  //     flexDirection="column"
-  //     alignItems="center"
-  //     justifyContent="center"
-  //     minHeight="100vh"
-  //     bgcolor="#f5f5f5"
-  //     p={3}
-  //   >
-  //     <Typography variant="h4" gutterBottom>
-  //       Login
-  //     </Typography>
-  //     <Box
-  //       component="form"
-  //       display="flex"
-  //       flexDirection="column"
-  //       width="100%"
-  //       maxWidth="400px"
-  //       gap={2}
-  //     >
-  //       <TextField
-  //         label="Email"
-  //         variant="outlined"
-  //         fullWidth
-  //         value={email}
-  //         onChange={(e) => setEmail(e.target.value)}
-  //       />
-  //       <TextField
-  //         label="Password"
-  //         type="password"
-  //         variant="outlined"
-  //         fullWidth
-  //         value={password}
-  //         onChange={(e) => setPassword(e.target.value)}
-  //       />
-  //       <Button
-  //         variant="contained"
-  //         color="primary"
-  //         fullWidth
-  //         onClick={handleLogin}
-  //       >
-  //         Login
-  //       </Button>
-  //     </Box>
-  //   </Box>
- // );
+
 };
