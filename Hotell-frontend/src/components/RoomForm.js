@@ -15,7 +15,7 @@ export default function RoomForm({ form, setForm }) {
       <h3 style={{ marginBottom: '1rem' }}>
         {form.name || 'Nytt rum'} {form.type && `(${form.type})`}
       </h3>
-      
+
       <TextField
         label="Namn"
         fullWidth
@@ -63,6 +63,14 @@ export default function RoomForm({ form, setForm }) {
         fullWidth
         value={form.pricePerNight}
         onChange={(e) => setForm({ ...form, pricePerNight: e.target.value })}
+        sx={{ mb: 2 }}
+      />
+      
+      <TextField
+        label="Bildlänk (URL)"
+        fullWidth
+        value={form.imageUrl}
+        onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
         sx={{ mb: 2 }}
       />
 

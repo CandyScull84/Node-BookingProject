@@ -1,7 +1,7 @@
 import {
   Card, CardContent, CardActions, Typography, Button, Chip, CardMedia
 } from '@mui/material';
-import { DEFAULT_ROOM_IMAGE } from '../constants/sharedData';
+import { DEFAULT_ROOM_IMAGE, ROOM_TYPE_IMAGES } from '../constants/sharedData';
 
 export default function RoomCard({ room, onBook, onEdit, onDelete, isAdmin }) {
   return (
@@ -9,7 +9,7 @@ export default function RoomCard({ room, onBook, onEdit, onDelete, isAdmin }) {
         <CardMedia
         component="img"
         height="200"
-        image={room.imageUrl || DEFAULT_ROOM_IMAGE}
+        image={room.imageUrl || ROOM_TYPE_IMAGES[room.type] || DEFAULT_ROOM_IMAGE}
         alt={room.name}
       />
       <CardContent>

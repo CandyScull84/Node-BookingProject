@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import API from '../utils/API';
 import {
   Container,
@@ -9,6 +9,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormControl, 
+  InputLabel,
+  MenuItem,
+  Select
 } from '@mui/material';
 import RoomCard from '../components/RoomCard';
 import useCurrentUser from '../hooks/useCurrentUser';
@@ -20,6 +24,7 @@ export default function Rooms() {
   const currentUser = useCurrentUser(); // ⬅️ ersätter getCurrentUser()
   const [room, setRoom] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [selectedType, setSelectedType] = useState('');
   const [open, setRoomOpen] = useState(false);
   const [form, setRoomForm] = useState({
     startDate: '',
@@ -108,8 +113,24 @@ export default function Rooms() {
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>Alla Tillgängliga Rum</Typography>
+      <FormControl sx={{ mb: 3, minWidth: 200 }}>
+        <InputLabel id="room-type-label">Filtrera typ</InputLabel>
+        <Select
+          labelId="room-type-label"
+          value={selectedType}
+          label="Filtrera typ"
+          onChange={(e) => setSelectedType(e.target.value)}
+        >
+          <MenuItem value="">Alla typer</MenuItem>
+          {ROOM_TYPES.map(type => (
+            <MenuItem key={type} value={type}>{type}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
       <Grid container spacing={3}>
-       {room.map(r => (
+       {room.filter(r => !selectedType || r.type === selectedType) 
+       .map(r => (
         <Grid key={r._id} item xs={12} sm={6} md={4}>
          <RoomCard
             room={r}

@@ -10,6 +10,13 @@ export const FACILITIES = [
   'Coffee/Water Station', 'Printer', 'Cribs', 'Playroom', 'Babysitting'
 ];
 
+export const ROOM_TYPE_IMAGES = {
+  Single: '/images/single-room.jpg',
+  Double: '/images/double-room.jpg',
+  Suite: '/images/suite-room.jpg',
+  Conference: '/images/conference-room.jpg',
+};
+
 export const ROOM_TYPES = [
   'Single', 'Double', 'Suite', 'Conference'
 ];
