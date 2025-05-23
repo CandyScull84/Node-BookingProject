@@ -12,6 +12,10 @@ const MenuProps = {
 export default function RoomForm({ form, setForm }) {
   return (
     <>
+      <h3 style={{ marginBottom: '1rem' }}>
+        {form.name || 'Nytt rum'} {form.type && `(${form.type})`}
+      </h3>
+      
       <TextField
         label="Namn"
         fullWidth
