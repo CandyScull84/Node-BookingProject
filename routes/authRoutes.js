@@ -18,5 +18,24 @@ router.get('/all', verifyToken, requireAdmin, cache, async (req, res) => {
   }
 });
 
+// routes/authRoutes.js
+router.patch('/role/:userId', verifyToken, requireAdmin, async (req, res) => {
+  const { userId } = req.params;
+  const { role } = req.body;
+
+  if (!['User', 'Admin'].includes(role)) {
+    return res.status(400).json({ error: 'Ogiltig roll' });
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(userId, { role }, { new: true });
+    if (!user) return res.status(404).json({ error: 'Användare ej hittad' });
+
+    res.json({ message: 'Roll uppdaterad', user });
+  } catch (err) {
+    res.status(500).json({ error: 'Misslyckades med att uppdatera roll' });
+  }
+});
+
 module.exports = router;
 
