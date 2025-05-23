@@ -14,6 +14,7 @@ import {
   MenuItem,
   Select
 } from '@mui/material';
+
 import RoomCard from '../components/RoomCard';
 import useCurrentUser from '../hooks/useCurrentUser';
 import SnackbarAlert from '../components/SnackbarAlert';
@@ -21,7 +22,7 @@ import { ROOM_TYPES } from '../constants/sharedData';
 import BookingForm from '../components/BookingForm';
 
 export default function Rooms() {
-  const currentUser = useCurrentUser(); // ⬅️ ersätter getCurrentUser()
+  const currentUser = useCurrentUser(); 
   const [room, setRoom] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedType, setSelectedType] = useState('');

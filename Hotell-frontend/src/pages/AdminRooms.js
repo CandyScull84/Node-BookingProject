@@ -5,7 +5,6 @@ import {
   DialogContent, DialogActions, Button 
 } from '@mui/material';
 import RoomCard from '../components/RoomCard';
-import { FACILITIES, ROOM_TYPES } from '../constants/sharedData'; 
 import SnackbarAlert from '../components/SnackbarAlert';
 import ConfirmDialog from '../components/ConfirmDialog';
 import RoomForm from '../components/RoomForm';
