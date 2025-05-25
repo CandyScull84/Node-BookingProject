@@ -6,7 +6,7 @@ const register = async (req, res) => {
   try {
     const { username, password, email } = req.body;
 
-    const user = new User({ username, password, email });
+    const user = new User({ username, password, email, role : 'User' });
     await user.save();
 
     res.status(201).json({ message: 'Användare registrerad' });

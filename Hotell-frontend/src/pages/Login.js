@@ -1,4 +1,5 @@
-import { getCurrentUser } from '../utils/auth';
+// import { getCurrentUser } from '../utils/auth';
+import {jwtDecode} from 'jwt-decode';
 import { useState } from 'react';
 import { Container, TextField, Button, Typography } from '@mui/material';
 import API from '../utils/API'; // Adjust the import path as necessary
@@ -15,21 +16,36 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const res = await API.post('/auth/login', form);
-      localStorage.setItem('authToken', res.data.token);
-      
-      const decoded = getCurrentUser();
+      const token = res.data.token;
+      console.log("✅ Mottagen token:", token);
+      localStorage.setItem('authToken', token);
+      // localStorage.setItem('authToken', res.data.token);
+           const user = jwtDecode(token); // 👈 Direkt från token
 
-      console.log('👉 decoded user:', decoded);
+      console.log('👉 Inloggad användare:', user);
 
-      if (decoded?.role === 'Admin') {
-      navigate('/admin/dashboard');
-    } else {
-      navigate('/user/dashboard');
-    }
+      if (user?.role === 'Admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/user/dashboard');
+      }
     } catch (err) {
       console.error('Login error:', err.response?.data || err.message);
       alert(err.response?.data?.error || 'Inloggning misslyckades');
     }
+    //   const decoded = getCurrentUser();
+
+    //   console.log('👉 decoded user:', decoded);
+
+    //   if (decoded?.role === 'Admin') {
+    //   navigate('/admin/dashboard');
+    // } else {
+    //   navigate('/user/dashboard');
+    // }
+    // } catch (err) {
+    //   console.error('Login error:', err.response?.data || err.message);
+    //   alert(err.response?.data?.error || 'Inloggning misslyckades');
+    // }
   };
 
   return (
