@@ -37,5 +37,39 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+// Hämta alla användare (utan lösenord)
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, '-password'); // Exkludera lösenord
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Kunde inte hämta användare' });
+  }
+};
+
+// Uppdatera roll (Admin-only)
+const updateUserRole = async (req, res) => {
+  const { userId } = req.params;
+  const { role } = req.body;
+
+  if (!['User', 'Admin'].includes(role)) {
+    return res.status(400).json({ error: 'Ogiltig roll' });
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(userId, { role }, { new: true });
+    if (!user) return res.status(404).json({ error: 'Användare ej hittad' });
+    res.json({ message: 'Roll uppdaterad', user });
+  } catch (err) {
+    res.status(500).json({ error: 'Misslyckades med att uppdatera roll' });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  getAllUsers,      // <-- lägg till detta
+  updateUserRole    // <-- och detta
+};
+
 
