@@ -12,8 +12,10 @@ const verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // Innehåller id och role
+    console.log('✅ Token verifierad:', decoded);
     next();
   } catch (err) {
+    console.error('❌ Ogiltig token:', err.message);
     res.status(403).json({ error: 'Not guilty token' });
   }
 };
