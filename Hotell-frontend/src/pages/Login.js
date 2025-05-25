@@ -17,15 +17,18 @@ export default function Login() {
       const res = await API.post('/auth/login', form);
       localStorage.setItem('authToken', res.data.token);
       
-      const user = getCurrentUser();
+      const decoded = getCurrentUser();
 
-      if (user?.role === 'Admin') {
+      console.log('👉 decoded user:', decoded);
+
+      if (decoded?.role === 'Admin') {
       navigate('/admin/dashboard');
     } else {
       navigate('/user/dashboard');
     }
     } catch (err) {
-      alert('Inloggning misslyckades');
+      console.error('Login error:', err.response?.data || err.message);
+      alert(err.response?.data?.error || 'Inloggning misslyckades');
     }
   };
 

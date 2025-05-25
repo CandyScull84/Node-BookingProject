@@ -32,8 +32,8 @@ export default function Register() {
         navigate('/');
       }, 1500);
     } catch (err) {
-      console.error(err.response?.data || err.message); 
-      setSnackbarErrorMsg(err.response?.data?.details || 'Registrering misslyckades');
+      console.error('Register error:', err.response?.data || err.message);
+      setSnackbarErrorMsg(err.response?.data?.error || 'Registrering misslyckades');
       setSnackbarErrorOpen(true);
 
     }
