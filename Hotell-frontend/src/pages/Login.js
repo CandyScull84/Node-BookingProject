@@ -16,6 +16,7 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const res = await API.post('/auth/login', form);
+      console.log('🔍 Inloggad användare från DB:', user);
       const token = res.data.token;
       console.log("✅ Mottagen token:", token);
       localStorage.setItem('authToken', token);
