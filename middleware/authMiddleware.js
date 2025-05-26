@@ -16,7 +16,8 @@ const verifyToken = (req, res, next) => {
     next();
   } catch (err) {
     console.error('❌ Ogiltig token:', err.message);
-    res.status(403).json({ error: 'Not guilty token' });
+    res.status(403).json({ error: 'Ogiltig token' });
+
   }
 };
 
