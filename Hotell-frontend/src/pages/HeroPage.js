@@ -1,17 +1,18 @@
-// pages/Home.js
+// pages/HeroPage.js
 import { Button, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import backgroundImage from '../constants/sharedData'; // Justera sökvägen till din bakgrundsbild
+
 export default function HeroPage() {
   const navigate = useNavigate();
 
  return (
-    <Box
+     <Box
       sx={{
         height: '100vh',
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: 'url("/images/hero.jpg")', // ✅ Använd absolut sökväg från public/
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         color: 'white',
         display: 'flex',
         flexDirection: 'column',
