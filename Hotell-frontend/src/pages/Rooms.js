@@ -132,7 +132,7 @@ export default function Rooms() {
       <Grid container spacing={3}>
        {room.filter(r => !selectedType || r.type === selectedType) 
        .map(r => (
-        <Grid key={r._id} item xs={12} sm={6} md={4}>
+        <Grid key={r._id} xs={12} sm={6} md={4}>
          <RoomCard
             room={r}
             onBook={() => {

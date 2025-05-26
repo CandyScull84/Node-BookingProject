@@ -110,7 +110,7 @@ export default function AdminRooms() {
 
       <Grid container spacing={3}>
         {rooms.map(room => (
-          <Grid item xs={12} sm={6} md={4} key={room._id}>
+          <Grid xs={12} sm={6} md={4} key={room._id}>
             <RoomCard
               room={room}
               onEdit={(room) => {
