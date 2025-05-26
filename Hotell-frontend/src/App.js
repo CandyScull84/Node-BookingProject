@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import HeroPage from './pages/HeroPage';
 import Header from './components/Header';
 import './App.css';
@@ -52,7 +52,7 @@ function App() {
   }, [currentUser]);
 
   return (
-    <BrowserRouter>
+    <>
       <Header />
    
       <Routes>
@@ -78,8 +78,7 @@ function App() {
         severity="info"
         onClose={() => setNotif('')}
       />
-      </BrowserRouter>
-  
+    </>
   );
 }
 

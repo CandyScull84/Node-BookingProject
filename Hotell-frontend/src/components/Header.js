@@ -61,19 +61,33 @@ export default function Header() {
       </AppBar>
 
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+        <Box sx={{ width: 250 }} role="presentation">
           <List>
             {navLinks.map(({ text, path }) => (
-              <ListItem button key={text} onClick={() => navigate(path)}>
+              <ListItem
+                button
+                key={text}
+                onClick={() => {
+                  navigate(path);
+                  setDrawerOpen(false);
+                }}
+              >
                 <ListItemText primary={text} />
               </ListItem>
             ))}
-            <ListItem button onClick={handleLogout}>
+            <ListItem
+              button
+              onClick={() => {
+                handleLogout();
+                setDrawerOpen(false);
+              }}
+            >
               <ListItemText primary="Logga ut" />
             </ListItem>
           </List>
         </Box>
       </Drawer>
+
     </>
   );
 }
