@@ -27,15 +27,15 @@ export default function HeroPage() {
         Hotell Lunden
       </Typography>
       <Typography variant="h5" sx={{ mb: 4, backgroundColor: 'rgba(0,0,0,0.5)', px: 2 }}>
-        Boka hotell-  konferensrum smidigt
+        Boka hotell- och konferensrum smidigt
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2 }}>
-        <Button color="yellow" variant="contained" size="large" onClick={() => navigate('/login')}>
+        <Button variant="contained" onClick={() => navigate('/login')}>
           Logga in
         </Button>
-        <Button variant="outlined" size="large" onClick={() => navigate('/register')} sx={{ color: 'white', borderColor: 'white' }}>
-          Registrera dig
+        <Button variant="outlined" sx={{ color: 'white', borderColor: 'white' }} onClick={() => navigate('/register')}>
+          Registrera
         </Button>
       </Box>
     </Box>
