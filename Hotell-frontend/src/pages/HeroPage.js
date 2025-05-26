@@ -2,6 +2,7 @@
 import { Button, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function HeroPage() {
   const navigate = useNavigate();
 
@@ -9,7 +10,7 @@ export default function HeroPage() {
      <Box
       sx={{
         height: '100vh',
-        backgroundImage: 'url("/images/hero.jpg")', // ✅ Använd absolut sökväg från public/
+        backgroundImage: `url('/Hero.jpg')`, // ✅ Använd absolut sökväg från public/
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -23,14 +24,14 @@ export default function HeroPage() {
       }}
     >
       <Typography variant="h2" sx={{ mb: 2, backgroundColor: 'rgba(0,0,0,0.6)', px: 2 }}>
-        Välkommen till Hotell Lunden
+        Hotell Lunden
       </Typography>
       <Typography variant="h5" sx={{ mb: 4, backgroundColor: 'rgba(0,0,0,0.5)', px: 2 }}>
-        Boka hotellrum eller konferensrum smidigt – som admin eller användare.
+        Boka hotell-  konferensrum smidigt
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2 }}>
-        <Button variant="contained" size="large" onClick={() => navigate('/login')}>
+        <Button color="yellow" variant="contained" size="large" onClick={() => navigate('/login')}>
           Logga in
         </Button>
         <Button variant="outlined" size="large" onClick={() => navigate('/register')} sx={{ color: 'white', borderColor: 'white' }}>

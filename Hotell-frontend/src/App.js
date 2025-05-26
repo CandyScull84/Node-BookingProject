@@ -8,7 +8,6 @@ import AdminRooms from './pages/AdminRooms';
 import AdminUsers from './pages/AdminUsers';
 import Login from './pages/Login';
 import MyBookings from './pages/MyBookings';
-import Navbar from './components/Navbar';
 import { useEffect, useState } from 'react';
 import socket from './utils/socket';
 import SnackbarAlert from './components/SnackbarAlert';
@@ -54,8 +53,8 @@ function App() {
 
   return (
     <BrowserRouter>
-     {currentUser && <Navbar />}
       <Header />
+   
       <Routes>
         <Route path="/" element={<HeroPage />} />
         <Route path="/login" element={<Login />} />

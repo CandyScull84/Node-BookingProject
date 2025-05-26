@@ -19,7 +19,7 @@ export const ROOM_TYPE_IMAGES = {
 
 export const DEFAULT_ROOM_IMAGE = '/images/default-room.jpg'; // Om ingen bild finns
 
-export const HERO_IMAGE = '/images/hero-background.jpg'; // Bakgrundsbild för startsidan
+export const HERO_IMAGE = '/public/Hero.jpg'; // Bakgrundsbild för startsidan
 
 export const ROOM_TYPES = [
   'Single', 'Double', 'Suite', 'Conference'
