@@ -17,12 +17,13 @@ export const ROOM_TYPE_IMAGES = {
   Conference: '/images/conference-room.jpg',
 };
 
+export const DEFAULT_ROOM_IMAGE = '/images/default-room.jpg'; // Om ingen bild finns
+
+export const HERO_IMAGE = '/images/hero-background.jpg'; // Bakgrundsbild för startsidan
+
 export const ROOM_TYPES = [
   'Single', 'Double', 'Suite', 'Conference'
 ];
-
-export const DEFAULT_ROOM_IMAGE = '/images/default-room.jpg'; // Om ingen bild finns
-
 export const ROLES = ['User', 'Admin'];
 
 export const DEFAULT_MESSAGES = {

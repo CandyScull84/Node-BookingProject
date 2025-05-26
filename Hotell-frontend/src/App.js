@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// import logo from './logo.svg';
+import HeroPage from './pages/HeroPage';
 import Header from './components/Header';
-import Home from './pages/Home';
 import './App.css';
 import Register from './pages/Register';
 import Rooms from './pages/Rooms';
@@ -9,13 +8,15 @@ import AdminRooms from './pages/AdminRooms';
 import AdminUsers from './pages/AdminUsers';
 import Login from './pages/Login';
 import MyBookings from './pages/MyBookings';
+import Navbar from './components/Navbar';
 import { useEffect, useState } from 'react';
 import socket from './utils/socket';
 import SnackbarAlert from './components/SnackbarAlert';
 import useCurrentUser from './hooks/useCurrentUser';
+import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDashboard from './pages/UserDashboard';
-
+//import { getCurrentUser } from './utils/auth';
 
 function App() {
   const [ notif, setNotif ] = useState('');
@@ -53,17 +54,24 @@ function App() {
 
   return (
     <BrowserRouter>
+     {currentUser && <Navbar />}
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HeroPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/user/dashboard" element={<UserDashboard />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+        <Route path="/user/dashboard" element={<ProtectedRoute requiredRole="User"><UserDashboard /></ProtectedRoute>} />
+        
+        <Route path="/admin/dashboard" element={<ProtectedRoute requiredRole="Admin"><AdminDashboard /></ProtectedRoute>} />
+        
         <Route path="/rooms" element={<Rooms />} />
         <Route path="/booking" element={<MyBookings />} />
-        <Route path="/admin/rooms" element={<AdminRooms />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
+        
+        <Route path="/admin/rooms" element={<ProtectedRoute requiredRole="Admin"><AdminRooms /></ProtectedRoute>} />
+
+        <Route path="/admin/users" element={<ProtectedRoute requiredRole="Admin"><AdminUsers /></ProtectedRoute>} />
+
       </Routes>
        <SnackbarAlert
         open={!!notif}
