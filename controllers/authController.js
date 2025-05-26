@@ -68,8 +68,8 @@ const updateUserRole = async (req, res) => {
 module.exports = {
   register,
   login,
-  getAllUsers,      // <-- lägg till detta
-  updateUserRole    // <-- och detta
+  getAllUsers,      
+  updateUserRole    
 };
 
 

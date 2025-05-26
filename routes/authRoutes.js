@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { register, login, getAllUsers, updateUserRole } = require('../controllers/authController');
 // const { register, login } = require('../controllers/authController');
-// const verifyToken = require('../middleware/authMiddleware');
-// const User = require('../models/User');
-// const requireAdmin = require('../middleware/roleMiddleware');
-// const cache = require('../middleware/cacheMiddleware');
+const verifyToken = require('../middleware/authMiddleware');
+// const { getAllUsers } = require('../controllers/authController');
+const requireAdmin = require('../middleware/roleMiddleware');
+const cache = require('../middleware/cacheMiddleware');
 
 router.post('/register', register);
 router.post('/login', login);
