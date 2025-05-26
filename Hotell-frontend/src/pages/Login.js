@@ -16,14 +16,15 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const res = await API.post('/auth/login', form);
-      console.log('🔍 Inloggad användare från DB:', user);
+      
       const token = res.data.token;
       console.log("✅ Mottagen token:", token);
       localStorage.setItem('authToken', token);
       // localStorage.setItem('authToken', res.data.token);
       const user = jwtDecode(token); // 👈 Direkt från token
-      const decoded = jwtDecode(token);
-      console.log('👉 Inloggad användare:', decoded);
+      console.log('🔍 Inloggad användare från DB:', user);
+      // const decoded = jwtDecode(token);
+      // console.log('👉 Inloggad användare:', decoded);
 
       if (user?.role === 'Admin') {
         navigate('/admin/dashboard');
