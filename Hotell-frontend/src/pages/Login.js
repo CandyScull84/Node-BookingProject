@@ -20,9 +20,9 @@ export default function Login() {
       console.log("✅ Mottagen token:", token);
       localStorage.setItem('authToken', token);
       // localStorage.setItem('authToken', res.data.token);
-           const user = jwtDecode(token); // 👈 Direkt från token
-
-      console.log('👉 Inloggad användare:', user);
+      const user = jwtDecode(token); // 👈 Direkt från token
+      const decoded = jwtDecode(token);
+      console.log('👉 Inloggad användare:', decoded);
 
       if (user?.role === 'Admin') {
         navigate('/admin/dashboard');
