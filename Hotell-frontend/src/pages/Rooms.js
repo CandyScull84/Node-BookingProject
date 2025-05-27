@@ -4,6 +4,7 @@ import {
   Container,
   Typography,
   Grid,
+  Box,
   Button,
   Dialog,
   DialogTitle,
@@ -57,8 +58,12 @@ export default function Rooms() {
    const handleBooking = async () => {
     if (!selectedRoom) return;
 
-    const isHotel = selectedRoom.type.toLowerCase() === 'hotel' || selectedRoom.type.toLowerCase() === 'workspace';
-    const isConference = selectedRoom.type.toLowerCase() === 'conference';
+    const type = (selectedRoom?.type || '').toLowerCase();
+    const isHotel = type === 'hotel' || type === 'workspace';
+    const isConference = type === 'conference';
+
+    // const isHotel = selectedRoom.type.toLowerCase() === 'hotel' || selectedRoom.type.toLowerCase() === 'workspace';
+    // const isConference = selectedRoom.type.toLowerCase() === 'conference';
 
     // Enkel validering
     if (isHotel && (!form.startDate || !form.endDate)) {
@@ -136,6 +141,7 @@ export default function Rooms() {
          <RoomCard
             room={r}
             onBook={() => {
+              console.log('🏨 Bokning pågår för:', r);
               setSelectedRoom(r);
               setRoomOpen(true);
             }}
@@ -145,11 +151,15 @@ export default function Rooms() {
       ))}
       </Grid>
 
-      <Dialog open={open} onClose={() => setRoomOpen(false)}>
+      <Dialog open={open} onClose={() => setRoomOpen(false)}fullWidth maxWidth="sm">
         <DialogTitle>Boka: {selectedRoom?.name}</DialogTitle>
         <DialogContent>
-           <BookingForm form={form} setForm={setRoomForm} room={selectedRoom} />
+          <Box sx={{ maxHeight: '70vh', overflowY: 'auto', pr: 1 }}>
+            <BookingForm form={form} setForm={setRoomForm} room={selectedRoom} />
+          </Box>
         </DialogContent>
+
+
         <DialogActions>
           <Button onClick={() => setRoomOpen(false)}>Avbryt</Button>
           <Button onClick={handleBooking} variant="contained">Boka</Button>

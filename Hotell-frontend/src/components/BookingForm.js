@@ -2,9 +2,13 @@
 import { TextField } from '@mui/material';
 import useCurrentUser from '../hooks/useCurrentUser';
 export default function BookingForm({ form, setForm, room }) {
+  
+  const currentUser = useCurrentUser();
+  if (!room?.type) return null; // Hantera fall utan rum
+
   const isHotel = room?.type?.toLowerCase() === 'hotel';
   const isConference = room?.type?.toLowerCase() === 'conference';
-  const currentUser = useCurrentUser();
+  
   
   return (
     <>
@@ -63,10 +67,12 @@ export default function BookingForm({ form, setForm, room }) {
         </>
       )}
       
-      <TextField
+       <TextField
         label="Användare"
+        fullWidth
         disabled
-        value={currentUser?.username}
+        value={currentUser?.username || ''}
+        sx={{ mb: 2 }}
       />
 
       <TextField

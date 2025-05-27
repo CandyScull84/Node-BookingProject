@@ -24,6 +24,7 @@ export default function AdminRooms() {
     description: '',
     pricePerNight: '',
     facilities: [],
+    imageUrl: '',
   });
   const [msg, setMsg] = useState('');
   const [showMsg, setShowMsg] = useState(false);
@@ -55,6 +56,13 @@ export default function AdminRooms() {
   };
 
    const handleSave = async () => {
+    console.log('💾 Försöker spara:', form);
+
+    if (!form.name || !form.type || !form.capacity) {
+      showMessage('Fyll i namn, typ och kapacitet.');
+      return;
+    }
+
     try {
       if (editingRoom) {
         await API.put(`/rooms/${editingRoom._id}`, form);
@@ -67,6 +75,7 @@ export default function AdminRooms() {
       setOpenForm(false);
       resetForm();
     } catch (err) {
+      console.error('❌ Fel vid sparning:', err.response?.data || err);
       showMessage('Kunde inte spara rummet');
     }
   };
@@ -122,6 +131,7 @@ export default function AdminRooms() {
                   description: room.description,
                   pricePerNight: room.pricePerNight,
                   facilities: room.facilities || [],
+                  imageUrl: room.imageUrl || '',
                 });
                 setOpenForm(true);
               }}
@@ -145,7 +155,9 @@ export default function AdminRooms() {
           </Button>
         </DialogActions>
       </Dialog>
+
       <SnackbarAlert open={showMsg} message={msg} onClose={() => setShowMsg(false)} />
+
       <ConfirmDialog
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}
