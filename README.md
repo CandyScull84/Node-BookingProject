@@ -1,18 +1,18 @@
-# 🏨 Hotell Lunden – Bokningsplattform
+# Hotell Lunden – Bokningsplattform
 
 Välkommen till **Hotell Lunden** – en modern bokningsplattform för arbetsplatser och konferensrum. Användare kan registrera sig, logga in och boka rum. Administratörer kan hantera alla användare, rum och bokningar.
 
 ---
 
-## 🚀 Funktioner
+## Funktioner
 
-### 👤 Användare
+### Användare
 - Registrering och inloggning (JWT-autentisering)
 - Se sina bokningar
 - Skapa, uppdatera och ta bort egna bokningar
 - Realtidsnotifiering vid bokningar
 
-### 🛠️ Admin
+### Admin
 - Hantera rum (skapa, redigera, ta bort)
 - Se alla användare
 - Se alla bokningar
@@ -20,7 +20,7 @@ Välkommen till **Hotell Lunden** – en modern bokningsplattform för arbetspla
 
 ---
 
-## 🧱 Teknikstack
+## Teknikstack
 
 | Teknologi          | Användning                          |
 |--------------------|-------------------------------------|
@@ -30,13 +30,14 @@ Välkommen till **Hotell Lunden** – en modern bokningsplattform för arbetspla
 | JWT + bcrypt       | Autentisering & lösenordshantering  |
 | Socket.io          | Realtidsnotifieringar               |
 | Redis              | Caching av data (rum och användare) |
+Frontend ej komplett än 
 | React.js           | Frontend UI                         |
 | Material UI        | Komponentbibliotek (UI)             |
 | Axios              | HTTP-anrop i frontend               |
 
 ---
 
-## 🛠️ Miljövariabler
+## Miljövariabler
 
 Skapa en `.env`-fil i backendprojektets rot med följande innehåll:
 
@@ -60,11 +61,11 @@ REDIS_URL=redis://:<password>@<redis-host>:<port>
 SOCKET_URL=ws://localhost:5000
 ```
 
-> 🔐 Lägg till `.env` i `.gitignore` så det inte pushas till GitHub.
+> Lägg till `.env` i `.gitignore` så det inte pushas till GitHub.
 
 ---
 
-## 🧩 Installation (Lokalt)
+## Installation (Lokalt)
 
 
 # Klona projektet
@@ -91,18 +92,16 @@ cd Hotell-frontend
 npm start
 ```
 
----
+## API-specifikation
 
-## 🌐 API-specifikation
-
-### 🔐 Autentisering
+### Autentisering
 | Metod | URL                  | Roll     | Beskrivning             |
 |-------|----------------------|----------|--------------------------|
 | POST  | /api/auth/register   | Anonym   | Skapa ny användare       |
 | POST  | /api/auth/login      | Anonym   | Logga in, få JWT-token   |
 | GET   | /api/auth/all        | Admin    | Hämta alla användare     |
 
-### 🏠 Rum
+### Rum
 | Metod | URL                  | Roll     | Beskrivning              |
 |-------|----------------------|----------|--------------------------|
 | GET   | /api/rooms           | Alla     | Lista alla rum           |
@@ -110,7 +109,7 @@ npm start
 | PUT   | /api/rooms/:id       | Admin    | Uppdatera rum            |
 | DELETE| /api/rooms/:id       | Admin    | Ta bort rum              |
 
-### 📅 Bokningar
+### Bokningar
 | Metod  | URL               | Roll        | Beskrivning                      |
 |--------|-------------------|-------------|----------------------------------|
 | GET    | /api/booking      | User/Admin  | Hämta bokningar                  |
@@ -120,7 +119,7 @@ npm start
 
 ---
 
-## ⚡ Realtidsnotifieringar
+## Realtidsnotifieringar
 
 - Socket.io används för att sända notifieringar när:
   - En bokning skapas
@@ -130,7 +129,7 @@ npm start
 
 ---
 
-## 🧠 Caching med Redis
+## Caching med Redis
 
 - Redis används för att cacha ofta hämtad data:
   - `GET /api/rooms`
@@ -139,7 +138,7 @@ npm start
 
 ---
 
-## 🧪 Tester med Postman
+## Tester med Postman
 
 1. Registrera ny användare via `POST /api/auth/register`
 2. Logga in via `POST /api/auth/login` → hämta JWT-token
@@ -148,7 +147,7 @@ npm start
 
 ---
 
-## 📦 Deployment
+## Deployment
 
 | Del       | Status               |
 |-----------|----------------------|
@@ -161,7 +160,7 @@ npm start
 
 ---
 
-## 📁 Projektstruktur
+## Projektstruktur
 
 ```
 /backend
@@ -183,9 +182,7 @@ npm start
   index.js
 ```
 
----
-
-## 👤 Roller
+## Roller
 
 | Roll   | Funktioner                                |
 |--------|--------------------------------------------|
@@ -194,22 +191,4 @@ npm start
 
 ---
 
-## 📸 Screenshots
-
-> 💡 Lägg till skärmbilder här på t.ex.
-> - Bokningsformulär
-> - Adminvy
-> - Inloggningssida
-
----
-
-## 🧹 TODO
-
-- [ ] Deployment på Render/Vercel
-- [ ] Skärmbilder i README
-- [ ] Responsiv design
-- [ ] Extra UI-finesser (filter, sök)
-
----
-
-## 🙌 Tack för att du använder Hotell Lunden!
+## Tack för att du använder Hotell Lunden!
