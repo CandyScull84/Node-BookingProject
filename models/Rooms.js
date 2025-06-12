@@ -57,10 +57,26 @@ const roomSchema = new mongoose.Schema({
     ],
     type: [String],
   },
-  pricePerNight: {
-    type: Number,
-    required: true,
-  },
+ pricePerNight: {
+  type: Number,
+  validate: {
+    validator: function (value) {
+      if (this.type === 'Conference') return value === undefined;
+      return typeof value === 'number' && value > 0;
+    },
+    message: 'Pris per natt krävs för hotellrum, ej för konferensrum'
+  }
+},
+pricePerHour: {
+  type: Number,
+  validate: {
+    validator: function (value) {
+      if (this.type === 'Conference') return typeof value === 'number' && value > 0;
+      return value === undefined;
+    },
+    message: 'Pris per timme krävs för konferensrum, ej för hotellrum'
+  }
+},
   createdAt: {
     type: Date,
     default: Date.now,
