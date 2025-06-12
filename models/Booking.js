@@ -45,6 +45,11 @@ const bookingSchema = new mongoose.Schema({
 
 // 🛡️ Säkerställ att bokningen är giltig för minst ett bokningstypsscenario
 bookingSchema.pre('validate', function (next) {
+  // Konvertera manuellt till Date
+  if (this.startDate) this.startDate = new Date(this.startDate);
+  if (this.endDate) this.endDate = new Date(this.endDate);
+  if (this.date) this.date = new Date(this.date);
+
   const isHotelBooking = this.startDate && this.endDate;
   const isConferenceBooking = this.date && this.startTime && this.endTime;
 
@@ -54,5 +59,6 @@ bookingSchema.pre('validate', function (next) {
 
   return next(new Error('Bokningen måste vara antingen hotell eller konferens'));
 });
+
 
 module.exports = mongoose.model('booking', bookingSchema);
