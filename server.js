@@ -31,10 +31,6 @@ async function startServer() {
       'https://din-frontend.netlify.app'
     ];
     
-    // app.use(cors({
-    //   origin: process.env.CLIENT_URL,
-    //   credentials: true,
-    // }));
     app.use(cors({
       origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {
@@ -48,7 +44,6 @@ async function startServer() {
     
     app.use(express.json());
 
-    
     app.use('/api/auth', authRoutes);
     app.use('/api/rooms', roomRoutes);
     app.use('/api/booking', bookingRoutes);
@@ -61,7 +56,7 @@ async function startServer() {
 
   } catch (err) {
     console.error('❌ Serverfel vid uppstart:', err.message);
-    process.exit(1); // Avsluta med felkod
+    process.exit(1); 
   }
 }
 

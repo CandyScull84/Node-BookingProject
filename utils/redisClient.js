@@ -1,6 +1,6 @@
 const { createClient } = require('redis');
 
-const redisUrl = process.env.REDIS_URL; // Sätt din Redis Cloud URL i miljövariabeln REDIS_URL
+const redisUrl = process.env.REDIS_URL; 
 
 const redisClient = createClient({
   url: redisUrl,
