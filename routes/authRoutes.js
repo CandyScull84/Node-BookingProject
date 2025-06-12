@@ -12,7 +12,7 @@ router.post('/login', login);
 
 router.get('/all', verifyToken, requireRole('Admin'), cache, getAllUsers);
 
-router.patch('/role/:userId', verifyToken, requireAdmin, updateUserRole);
+router.patch('/role/:userId', verifyToken, requireRole('Admin'), updateUserRole);
 
 module.exports = router;
 
