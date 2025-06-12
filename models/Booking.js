@@ -1,54 +1,58 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-  roomId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Rooms', 
-    required: true
+  roomId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Rooms',
+    required: true,
   },
-  userId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
-  guests: { 
-    type: Number, 
-    required: true 
+  guests: {
+    type: Number,
+    required: true,
   },
 
-  // Hotellrum
-  startDate: Date,
-  endDate: Date,
+  // För hotellrum:
+  startDate: {
+    type: Date,
+    required: false,
+  },
+  endDate: {
+    type: Date,
+    required: false,
+  },
 
-  // Konferensrum
-  date: Date,
-  startTime: String,
-  endTime: String
+  // För konferensrum:
+  date: {
+    type: Date,
+    required: false,
+  },
+  startTime: {
+    type: String,
+    required: false,
+  },
+  endTime: {
+    type: String,
+    required: false,
+  }
+}, {
+  timestamps: true,
+});
 
-}, { timestamps: true });
-
-// 🛡️ Anpassad validering för att skilja hotell och konferens
+// 🛡️ Säkerställ att bokningen är giltig för minst ett bokningstypsscenario
 bookingSchema.pre('validate', function (next) {
-  const isHotelBooking = this.startDate || this.endDate;
-  const isConferenceBooking = this.date || this.startTime || this.endTime;
+  const isHotelBooking = this.startDate && this.endDate;
+  const isConferenceBooking = this.date && this.startTime && this.endTime;
 
-  if (isHotelBooking) {
-    if (!this.startDate || !this.endDate) {
-      return next(new Error('Både startDate och endDate krävs för hotellbokning'));
-    }
+  if (isHotelBooking || isConferenceBooking) {
+    return next();
   }
 
-  if (isConferenceBooking) {
-    if (!this.date || !this.startTime || !this.endTime) {
-      return next(new Error('Datum, start- och sluttid krävs för konferensbokning'));
-    }
-  }
-
-  if (!isHotelBooking && !isConferenceBooking) {
-    return next(new Error('Bokningen måste vara antingen hotell eller konferens'));
-  }
-
-  next();
+  return next(new Error('Bokningen måste vara antingen hotell eller konferens'));
 });
 
 module.exports = mongoose.model('booking', bookingSchema);
