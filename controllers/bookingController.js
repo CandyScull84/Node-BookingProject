@@ -43,9 +43,9 @@ const getBooking = async (req, res) => {
 
 
 const createBooking = async (req, res) => {
-  console.log('📦 POST /api/booking körs');
-  console.log('🧾 Innehåll i req.body:', req.body);
-  console.log('🔐 Inloggad användare:', req.user);
+  console.log('POST /api/booking körs');
+  console.log('Innehåll i req.body:', req.body);
+  console.log('Inloggad användare:', req.user);
 
   try {
     const { roomId, startDate, endDate, guests, date, startTime, endTime } = req.body;
