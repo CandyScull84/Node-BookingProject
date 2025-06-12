@@ -6,7 +6,6 @@ function requireCapacity(value) {
 
   if (!typesRequiringCapacity.includes(this.type)) return true;
 
-  // Om det är Cabin, måste capacity anges och > 0
   return typeof value === 'number' && value > 0;
 }
 
