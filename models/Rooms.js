@@ -35,7 +35,7 @@ const roomSchema = new mongoose.Schema({
   facilities: {
     enum: [
       // 🛏️ Rumsfaciliteter
-      'WiFi', 'TV', 'Airconditioning', 'Minibar', 'Balcony', 'Kettle', 'Coffee Maker', 'Desk', 'Safe', 'Hair Dryer', 'Balcony with seaview',
+      'WiFi', 'TV', 'Airconditioning', 'Minibar', 'Balcony', 'Kettle', 'Coffee Maker', 'Desk', 'Safe', 'Hair Dryer',
 
       // 🧖‍♀️ Wellness
       'Sauna', 'Spa', 'Gym', 'Indoor Pool', 'Jacuzzi', 'Massage',
